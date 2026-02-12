@@ -1,0 +1,251 @@
+/* ========================
+   KPI CARD STYLES
+======================== */
+
+.card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    
+    width: 100%;
+    min-height: 110px;
+    padding: 20px 24px;
+    
+    background: var(--surface-default, #ffffff);
+    border: 1px solid var(--border-soft, rgba(0, 0, 0, 0.08));
+    border-radius: 14px;
+    
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.05);
+    
+    transition: all 150ms ease-in-out;
+  }
+  
+  /* Content section (left) */
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+  }
+  
+  /* Title */
+  .title {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--color-text-muted, #6B7280);
+    margin: 0;
+  }
+  
+  /* Main value (number) */
+  .value {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--color-text-primary, #0a0a0a);
+    margin: 0;
+  }
+  
+  /* Comparison text */
+  .comparison {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+    margin: 0;
+  }
+  
+  .comparison_positive {
+    color: #10B981; /* Green */
+  }
+  
+  .comparison_negative {
+    color: #EF4444; /* Red */
+  }
+  
+  .comparison_neutral {
+    color: var(--color-text-muted, #6B7280); /* Gray */
+  }
+  
+  /* Icon wrapper (right) */
+  .iconWrap {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #717182; /* Light gray for icons */
+  }
+  
+  .iconWrap svg {
+    width: 36px;
+    height: 36px;
+    stroke-width: 2px;
+  }
+  
+  /* ========================
+     INTERACTIVE STATES
+  ======================== */
+  
+  /* Link wrapper (when href exists) */
+  .linkWrap {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  
+  /* Clickable state */
+  .cardClickable {
+    cursor: pointer;
+  }
+  
+  .cardClickable:hover {
+    background: #F9FAFB;
+    border-color: #D1D5DB;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.07);
+    transform: translateY(-1px);
+  }
+  
+  .cardClickable:active {
+    background: #F3F4F6;
+    border-color: #9CA3AF;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06);
+    transform: translateY(0);
+  }
+  
+  /* ========================
+     LOADING SKELETON
+  ======================== */
+  
+  .cardLoading {
+    pointer-events: none;
+  }
+  
+  .skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+  
+  .skeletonTitle,
+  .skeletonValue,
+  .skeletonComparison {
+    background: linear-gradient(
+      90deg,
+      #E5E7EB 25%,
+      #F3F4F6 50%,
+      #E5E7EB 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+  }
+  
+  .skeletonTitle {
+    width: 60%;
+    height: 16px;
+  }
+  
+  .skeletonValue {
+    width: 40%;
+    height: 32px;
+  }
+  
+  .skeletonComparison {
+    width: 50%;
+    height: 14px;
+  }
+  
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+  
+  /* ========================
+     DARK MODE
+  ======================== */
+  
+  :root[data-theme="dark"] .card {
+    background: var(--surface-default, #1F2937);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+  }
+  
+  :root[data-theme="dark"] .title {
+    color: #9CA3AF;
+  }
+  
+  :root[data-theme="dark"] .value {
+    color: var(--color-text-primary, #F9FAFB);
+  }
+  
+  :root[data-theme="dark"] .comparison_positive {
+    color: #34D399;
+  }
+  
+  :root[data-theme="dark"] .comparison_negative {
+    color: #F87171;
+  }
+  
+  :root[data-theme="dark"] .comparison_neutral {
+    color: #9CA3AF;
+  }
+  
+  :root[data-theme="dark"] .iconWrap {
+    color: #6B7280;
+  }
+  
+  :root[data-theme="dark"] .cardClickable:hover {
+    background: #2D3748;
+    border-color: #4B5563;
+  }
+  
+  :root[data-theme="dark"] .cardClickable:active {
+    background: #374151;
+    border-color: #6B7280;
+  }
+  
+  :root[data-theme="dark"] .skeletonTitle,
+  :root[data-theme="dark"] .skeletonValue,
+  :root[data-theme="dark"] .skeletonComparison {
+    background: linear-gradient(
+      90deg,
+      #374151 25%,
+      #4B5563 50%,
+      #374151 75%
+    );
+    background-size: 200% 100%;
+  }
+  
+  /* ========================
+     RESPONSIVE
+  ======================== */
+  
+  @media (max-width: 767px) {
+    .card {
+      padding: 16px 18px;
+      min-height: 100px;
+    }
+  
+    .value {
+      font-size: 28px;
+    }
+  
+    .iconWrap {
+      width: 32px;
+      height: 32px;
+    }
+  
+    .iconWrap svg {
+      width: 28px;
+      height: 28px;
+    }
+  }

@@ -1,0 +1,189 @@
+.alert {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-radius: 12px;
+    border: 1px solid;
+    width: 100%;
+    gap: 16px;
+    height: 66px; /* ✅ Fixed height */
+    min-height: 66px;
+  }
+  
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .iconWrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+  
+  .icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+  
+  .message {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--color-text-primary, #0a0a0a);
+    line-height: 20px;
+  }
+  
+.right {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.meta {
+  font-size: 12px;
+  color: var(--color-text-muted, #6b7280);
+  white-space: nowrap;
+}
+  
+  .actionButton {
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: #ffffff;
+    color: var(--color-text-primary, #0a0a0a);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+  }
+  
+  .actionButton:hover {
+    background: #f9fafb;
+    border-color: rgba(0, 0, 0, 0.16);
+  }
+  
+  .actionButton:active {
+    background: #f3f4f6;
+  }
+  
+  /* ========================= 
+     LIGHT MODE TONES 
+  ========================= */
+  
+  /* Error tone (red) - Light */
+  .alert_error {
+    background: #FEF2F2; /* ✅ Red light bg */
+    border-color: rgba(239, 68, 68, 0.2);
+  }
+  
+  .alert_error .icon {
+    color: #dc2626;
+  }
+  
+  /* Warning tone (yellow) - Light */
+  .alert_warning {
+    background: #FEFCE8; /* ✅ Yellow light bg */
+    border-color: rgba(234, 179, 8, 0.2);
+  }
+  
+  .alert_warning .icon {
+    color: #ca8a04;
+  }
+  
+  /* Info tone (blue) - Light */
+  .alert_info {
+    background: #EFF6FF; /* ✅ Blue light bg */
+    border-color: rgba(59, 130, 246, 0.2);
+  }
+  
+  .alert_info .icon {
+    color: #2563eb;
+  }
+  
+  /* Success tone (green) - Light */
+  .alert_success {
+    background: #F0FDF4; /* ✅ Green light bg */
+    border-color: rgba(34, 197, 94, 0.2);
+  }
+  
+  .alert_success .icon {
+    color: #16a34a;
+  }
+  
+  /* ========================= 
+     DARK MODE TONES 
+  ========================= */
+  
+  :root[data-theme="dark"] .alert {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+  
+  :root[data-theme="dark"] .message {
+    color: var(--color-text-primary, #FAFAFA);
+  }
+  
+  /* Error (red) - Dark */
+  :root[data-theme="dark"] .alert_error {
+    background: #460809; /* ✅ Red dark bg - FIXED */
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+  
+  :root[data-theme="dark"] .alert_error .icon {
+    color: #fca5a5;
+  }
+  
+  /* Warning (yellow) - Dark */
+  :root[data-theme="dark"] .alert_warning {
+    background: #432004; /* ✅ Yellow dark bg - FIXED */
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+  
+  :root[data-theme="dark"] .alert_warning .icon {
+    color: #fbbf24;
+  }
+  
+  /* Info (blue) - Dark */
+  :root[data-theme="dark"] .alert_info {
+    background: #162456; /* ✅ Blue dark bg - FIXED */
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+  
+  :root[data-theme="dark"] .alert_info .icon {
+    color: #93c5fd;
+  }
+  
+  /* Success (green) - Dark */
+  :root[data-theme="dark"] .alert_success {
+    background: #032E15; /* ✅ Green dark bg - FIXED */
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+  
+  :root[data-theme="dark"] .alert_success .icon {
+    color: #86efac;
+  }
+  
+  /* Dark mode button */
+  :root[data-theme="dark"] .actionButton {
+    background: #000000; /* ✅ Black background */
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #FFFFFF; /* ✅ White text */
+  }
+  
+  :root[data-theme="dark"] .actionButton:hover {
+    background: #1a1a1a; /* ✅ Slightly lighter on hover */
+    border-color: rgba(255, 255, 255, 0.16);
+  }
+  
+  :root[data-theme="dark"] .actionButton:active {
+    background: #2a2a2a; /* ✅ Even lighter on click */
+  }

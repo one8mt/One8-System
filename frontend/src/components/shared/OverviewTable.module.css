@@ -1,0 +1,498 @@
+.card{
+    width: 100%;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 14px;
+    background: var(--surface-default, #fff);
+    overflow: hidden;
+  }
+  
+  .header{
+    padding: 18px 20px;
+  }
+  
+  .headerTop{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .headerIcon{
+    font-size: 16px;
+    line-height: 1;
+    color: var(--color-text-primary, #0a0a0a);
+  }
+  
+  .headerTitle{
+    font-size: 18px;  /* ← عنوان الجدول */
+    font-weight: 600;
+    color: var(--color-text-primary, #0a0a0a);
+  }
+  
+  .headerDesc{
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--color-text-muted, #717182);
+  }
+  
+  .divider{
+    height: 1px;               /* ✅ خط واحد خفيف */
+    background: rgba(0,0,0,0.08);
+  }
+  
+  .table{
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .row{
+    padding: 16px 0;
+    background: transparent;
+  }
+  
+  .row + .row{
+    border-top: 1px solid rgba(0,0,0,0.08);
+  }
+  
+  .rowLink{
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  
+  .rowInner{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 0 25px;   /* ✅ هذا اللي يتحكم بالمسافة يمين/يسار */
+
+  }
+  
+  .left{
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    min-width: 0;
+  }
+  
+  .iconWrap{
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+  }
+  
+  .iconTone_blue{ background: var(--tint-blue); }
+  .iconTone_green{ background: var(--tint-green); }
+  .iconTone_purple{ background: var(--tint-purple); }
+  
+  .opText{
+    min-width: 0;
+  }
+  
+  .opId{
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-text-primary, #0a0a0a);
+    line-height: 20px;
+  }
+  
+  .opTitle{
+    margin-top: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--color-text-primary, #0a0a0a);
+    line-height: 20px;
+  }
+  
+  .opMeta{
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--color-text-muted, #717182);
+  }
+  
+  .right{
+    flex: 0 0 auto;
+    min-width: 520px;       
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* ✅ كل محتوى اليمين يصير رايح لليمين */
+  }
+  
+  .statusTitle{
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 20px;
+    color: var(--color-text-primary, #0a0a0a);
+  }
+  
+  .statusRow{
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    justify-content: flex-end; /* ✅ كل شيء لليمين */
+  }
+  
+  .badge{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 22px; /* ✅ طول/ارتفاع البادج */
+    padding: 0 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 550;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+  
+  /* ✅ ألوان البادجات هنا */
+  .badge_inProgress{
+    background: #DBEAFE;
+    border-color: #B9CCFF;
+    color: #193CB8;
+  }
+  
+  .badge_partial{
+    background: #FDEBD7;
+    border-color: #F5C08A;
+    color: #A65F00;
+  }
+  
+  .badge_pending{
+    background: #FEF9C2;
+    border-color: #D1D5DB;
+    color: #894B00;
+  }
+  
+  .badge_completed{
+    background: #DCFCE7;
+    border-color: #86EFAC;
+    color: #016630
+  }
+  
+  .badge_qaHold{
+    background: #F3E8FF;
+    border-color: #C4B5FD;
+    color: #6E11B0;
+  }
+  
+  .badge_delayed{
+    background: #FEE2E2;
+    border-color: #FCA5A5;
+    color: #7F1D1D;
+  }
+  
+  .badge_open{
+    background: #E5E7EB;
+    border-color: #D1D5DB;
+    color: #111827;
+  }
+  
+  .badge_closed{
+    background: #E5E7EB;
+    border-color: #D1D5DB;
+    color: #111827;
+  }
+  
+  .badge_default{
+    background: #F3F4F6;
+    border-color: #D1D5DB;
+    color: #111827;
+  }
+  
+  .progressWrap{
+    flex: 0 0 auto; 
+    width: 150px; 
+  }
+  
+  .progressTrack{
+    width: 100%;
+    height: 10px;
+    background: rgba(0,0,0,0.12);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  
+  .progressFill{
+    height: 100%;
+    background: #0a0a0a; /* ✅ البروقراس أسود دائمًا */
+    border-radius: 999px;
+  }
+  
+  .percent{
+    width: 52px;
+    text-align: right;
+    font-size: 16px;
+    font-weight: 200;
+    color: var(--color-text-muted, #717182);
+  }
+  
+ /* Dark mode */
+:root[data-theme="dark"] .card{
+    border-color: rgba(255,255,255,0.14);
+  }
+  
+  /* divider خط واحد فقط */
+  :root[data-theme="dark"] .divider{
+    background: rgba(255,255,255,0.10);
+  }
+  
+  /* مهم: لا تعطي الصف background */
+  :root[data-theme="dark"] .row + .row{
+    border-top-color: rgba(255,255,255,0.10);
+    background: transparent !important;
+  }
+  
+  :root[data-theme="dark"] .progressTrack{
+    background: rgba(255,255,255,0.18);
+  }
+  :root[data-theme="dark"] .progressFill{
+    background: #FAFAFA;
+  }
+
+/* =========================
+   CRM-SPECIFIC STYLES (crm__ prefix)
+========================= */
+
+/* Inner container with rounded corners */
+.crm__innerContainer {
+  padding: 20px;
+  background: transparent;
+}
+
+/* Metric block (label + value) محتوى الخانه */
+.crm__metricBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  /* align-items: center; */
+  width: 100%;
+  /* text-align: center; */
+}
+
+/* Row card (each row is a card) */
+.crm__rowCard {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  background: var(--surface-default, #fff);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  align-items: start;
+}
+
+.crm__rowCard:last-child {
+  margin-bottom: 0;
+}
+
+/* Left side: avatar + client info */
+.crm__left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.crm__avatarWrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #F3F4F6;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.crm__clientInfo {
+  min-width: 0;
+}
+
+.crm__clientHeader {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 20px;
+}
+
+.crm__clientName {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-text-primary, #0A0A0A);
+}
+
+.crm__clientType {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-muted, #717182);
+}
+
+.crm__meta {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--color-text-muted, #717182);
+}
+
+/* Right side: 4 metric blocks grid  هيكل الجدول*/
+.crm__rightGrid {
+  display: grid;
+  grid-template-columns: 140px 120px 140px 190px;
+  gap: 24px;
+  align-items: start;
+  justify-items: stretch;
+}
+
+/* Center ONLY first 3 CRM metric columns */
+.crm__rightGrid > .crm__metricBlock:nth-child(-n+3){
+  align-items: center;
+  text-align: center;
+}
+
+.crm__rightGrid > .crm__metricBlock:nth-child(-n+3) .crm__metricLabel{
+  justify-content: center;
+  text-align: center;
+}
+
+.crm__rightGrid > .crm__metricBlock:nth-child(-n+3) .crm__metricValue{
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* Metric label (small muted text) */
+.crm__metricLabel {
+  font-size: 12px;    /* ← حجم العنوان */
+  font-weight: 400;   /* ← سماكته */
+  color: var(--color-text-muted, #717182);
+  line-height: 16px;   /* ← ارتفاع السطر */
+  height: 16px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: flex-start;
+  text-align: center;
+}
+
+/* Metric value container */
+.crm__metricValue {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  min-height: 28px;
+  text-align: left;
+  width: 100%;
+}
+
+/* Satisfaction with star */
+.crm__satisfaction {
+  font-size: 16px;  /* ← حجم الرقم */
+  font-weight: 500;
+  color: var(--color-text-primary, #0A0A0A);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-start;
+}
+
+.crm__star {
+  font-size: 14px;
+  color: #FBBF24;
+  line-height: 1;
+}
+
+/* Complaints */
+.crm__complaints {
+  font-size: 16px; /* ← حجم الرقم */
+  font-weight: 500;
+  color: var(--color-text-primary, #0A0A0A);
+}
+
+
+
+/* Profit bar: progress + percentage */
+.crm__profitBarWrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.crm__profitTrack {
+  flex: 0 0 auto;
+  width: 100px;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.crm__profitFill {
+  height: 100%;
+  background: #0A0A0A;
+  border-radius: 999px;
+}
+
+.crm__profitPercent {
+  width: 40px;
+  font-size: 14px; /* ← حجم الرقم */
+  font-weight: 500;
+  color: var(--color-text-primary, #0a0a0a);
+  text-align: right;
+}
+
+/* Health status badge wrapper for alignment */
+.crm__healthBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Health status badges */
+.crm__badge_healthy {
+  background: #DCFCE7;
+  border-color: #86EFAC;
+  color: #016630;
+  display: inline-flex;
+}
+
+.crm__badge_atRisk {
+  background: #FEE2E2;
+  border-color: #FCA5A5;
+  color: #7F1D1D;
+  display: inline-flex;
+}
+
+.crm__badge_monitor {
+  background: #FEF9C2;
+  border-color: #D1D5DB;
+  color: #894B00;
+  display: inline-flex;
+}
+
+.crm__badge_default {
+  background: #F3F4F6;
+  border-color: #D1D5DB;
+  color: #111827;
+}
+
+/* Dark mode for CRM */
+:root[data-theme="dark"] .crm__avatarWrap {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="dark"] .crm__rowCard {
+  background: var(--surface-default, #0F0F10);
+  border-color: rgba(255, 255, 255, 0.10);
+}
+
+:root[data-theme="dark"] .crm__profitTrack {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+:root[data-theme="dark"] .crm__profitFill {
+  background: #FAFAFA;
+}

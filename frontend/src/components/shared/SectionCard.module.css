@@ -1,0 +1,174 @@
+.card {
+    width: 383px;
+    max-width: 100%; /* ✅ FIXED SIZE like old project */
+    border-radius: 14px;
+    border: 1px solid var(--card-border);
+    background: var(--surface-default, #ffffff);
+    padding: 24px;
+    transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease,
+      background 120ms ease;
+  }
+  
+  .topRow {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  
+  .left {
+    display: flex;
+    gap: 12px;
+    min-width: 0;
+  }
+  
+  .iconWrap {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+  
+  .icon {
+    width: 16px;
+    height: 16px;
+    display: block;
+  }
+  
+  .text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  
+    /* ✅ يحجز مساحة تكفي سطرين للوصف */
+    min-height: 42px;
+  }
+  
+  .title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text-primary, #0a0a0a);
+    line-height: 24px;
+  }
+  
+  .subtitle {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--color-text-muted, #717182);
+    line-height: 16px;
+  
+    /* ✅ يخلي كل الكروت تحجز سطرين حتى لو النص قصير */
+    min-height: 32px;
+  
+    /* (اختياري) لو ودّك تمنعين الانفجار لو صار النص طويل */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .badge {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--badge-text);
+    background: var(--badge-bg);
+    border-radius: 999px;
+    padding: 4px 8px;
+    height: fit-content;
+  }
+
+
+  .badgeSlot{
+    flex: 0 0 auto;
+    width: 64px;         /* مساحة ثابتة للـ badge */
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .statsRow {
+    margin-top: 16px;
+    display: flex;
+    gap: 12px;
+  }
+  
+  .statBox {
+    flex: 1;
+    background: var(--surface-muted, rgba(236, 236, 240, 0.5));
+    border-radius: 8px;
+    padding: 12px 8px;
+    text-align: center;
+  }
+  
+  .statValue {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-primary, #0a0a0a);
+    line-height: 18px;
+  }
+  
+  .statLabel {
+    margin-top: 2px;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--color-text-muted, #717182);
+    line-height: 14px;
+  }
+  
+  /* ---------- Link wrapper (when href exists) ---------- */
+  .linkWrap {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  
+  /* ---------- CLICKABLE (Hover) ---------- */
+  .cardClickable {
+    cursor: pointer;
+  }
+  
+  .cardClickable:hover {
+    transform: none; /* يوقف حركة الكاردز مع البوينتر */
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+  }
+  
+  /* ---------- ICON TONES (uses global tints) ---------- */
+  .toneIcon_blue { background: var(--tint-blue); }
+  .toneIcon_green { background: var(--tint-green); }
+  .toneIcon_purple { background: var(--tint-purple); }
+  .toneIcon_orange { background: var(--tint-orange); }
+  
+  /* ---------- CARD TONE VARS (Active) ---------- */
+  .toneCard_blue {
+    --active-bg: var(--tone-card-blue-bg);
+    --active-border: var(--tone-card-blue-border);
+  }
+  .toneCard_green {
+    --active-bg: var(--tone-card-green-bg);
+    --active-border: var(--tone-card-green-border);
+  }
+  .toneCard_purple {
+    --active-bg: var(--tone-card-purple-bg);
+    --active-border: var(--tone-card-purple-border);
+  }
+  .toneCard_orange {
+    --active-bg: var(--tone-card-orange-bg);
+    --active-border: var(--tone-card-orange-border);
+  }
+  
+  /* ---------- ACTIVE STATE (Double Border) ----------
+     خارجي: border-color (active-border)
+     داخلي: inset border
+  */
+  .cardActive {
+    background: var(--active-bg);
+    border-color: var(--active-border);
+    box-shadow:
+      0 0 0 1px #ffffff inset;
+    
+  }
+
+  
