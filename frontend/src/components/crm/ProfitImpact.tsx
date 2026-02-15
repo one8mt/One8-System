@@ -398,7 +398,7 @@ export function ProfitImpact({ userRole }: ProfitImpactProps) {
                 <ReferenceLine y={thresholds.profit} stroke="hsl(var(--muted-foreground))" strokeDasharray="5 5" opacity={0.5} />
 
                 {showTrendline && trendlineData && (
-                  <Scatter data={trendlineData} line={{ stroke: "hsl(var(--primary))", strokeWidth: 2 }} shape={() => null} />
+                  <Scatter data={trendlineData} line={{ stroke: "hsl(var(--primary))", strokeWidth: 2 }} shape={() => <g />} />
                 )}
               </ScatterChart>
             </ResponsiveContainer>
