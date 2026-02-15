@@ -58,7 +58,10 @@ export function DonutChart({
               labelStyle={getTooltipTextStyle()}
             />
           )}
-          {showLegend && <Legend {...legendProps} />}
+          {showLegend && (() => {
+            const { ref: _ref, ...safeLegendProps } = legendProps ?? {};
+            return <Legend {...safeLegendProps} />;
+          })()}
         </PieChart>
       </ResponsiveContainer>
     </div>
