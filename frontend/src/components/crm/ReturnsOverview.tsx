@@ -9,7 +9,7 @@ import { RefundRequestModal } from "./modals/RefundRequestModal";
 import { MissingRequestModal } from "./modals/MissingRequestModal";
 import { DamagedRequestModal } from "./modals/DamagedRequestModal";
 import { ExchangeRequestModal } from "./modals/ExchangeRequestModal";
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recharts";
 import { DonutChart } from "../shared/DonutChart";
 import { RequestStatusBadge } from "../shared/RequestStatusBadge";
 import { CrmReturnModeBadge, CrmReturnTypeBadge } from "../shared/CrmReturnBadges";
