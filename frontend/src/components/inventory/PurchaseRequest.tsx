@@ -368,11 +368,14 @@ export function PurchaseRequest({ userRole }: PurchaseRequestProps) {
                 <h3 className="font-medium text-sm text-muted-foreground">Operation</h3>
                 <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
                   {operationRequests.map((request) => (
-                    <Card key={request.id} className="border-2 hover:border-primary/50 transition-colors">
+                    <Card key={request.id} className="border-2 border-orange-200 dark:border-orange-800 hover:border-orange-400 transition-colors">
                       <CardContent className="p-4 space-y-2">
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-sm">{request.itemCode}</span>
-                          <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-300">
+                          <Badge
+                            variant="outline"
+                            className="bg-orange-50 text-orange-700 border-orange-300 dark:bg-orange-950 dark:text-orange-200 dark:border-orange-800"
+                          >
                             {request.id}
                           </Badge>
                         </div>

@@ -9,7 +9,8 @@ import { RefundRequestModal } from "./modals/RefundRequestModal";
 import { MissingRequestModal } from "./modals/MissingRequestModal";
 import { DamagedRequestModal } from "./modals/DamagedRequestModal";
 import { ExchangeRequestModal } from "./modals/ExchangeRequestModal";
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
+import { DonutChart } from "../shared/DonutChart";
 import { RequestStatusBadge } from "../shared/RequestStatusBadge";
 import { CrmReturnModeBadge, CrmReturnTypeBadge } from "../shared/CrmReturnBadges";
 import { KpiCards } from "../shared/KpiCards";
@@ -657,32 +658,16 @@ export function ReturnsOverview({ userRole }: ReturnsOverviewProps) {
               <CardTitle>Return Types</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-64 flex items-center justify-center">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={[
-                        { name: "Refund", value: refundReturns.length },
-                        { name: "Exchange", value: exchangeReturns.length },
-                        { name: "Damaged", value: damagedReturns.length },
-                        { name: "Missing", value: missingReturns.length },
-                      ]}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={90}
-                      paddingAngle={2}
-                      dataKey="value"
-                    >
-                      <Cell fill="#22c55e" />
-                      <Cell fill="#eab308" />
-                      <Cell fill="#ef4444" />
-                      <Cell fill="#3b82f6" />
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
+              <DonutChart
+                data={[
+                  { name: "Refund", value: refundReturns.length, color: "#22c55e" },
+                  { name: "Exchange", value: exchangeReturns.length, color: "#eab308" },
+                  { name: "Damaged", value: damagedReturns.length, color: "#ef4444" },
+                  { name: "Missing", value: missingReturns.length, color: "#3b82f6" },
+                ]}
+                className="h-64"
+                outerRadius={90}
+              />
               <div className="flex items-center justify-center gap-6 mt-4">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-green-500 rounded-sm" />

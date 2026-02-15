@@ -111,7 +111,7 @@ export function HomeDashboard({ userRole }: HomeDashboardProps) {
       {/* Welcome Section */}
       <div className="mb-8">
         <h1 className="mb-2">
-          Welcome back, {userRole === 'manager' ? 'Manager' : 'Rahaf'}!
+          Welcome back, {userRole === 'manager' ? 'Manager' : 'Ahmed'}!
         </h1>
         <p className="text-muted-foreground">
           Here's what's happening with your procurement processes today.

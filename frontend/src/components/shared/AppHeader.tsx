@@ -102,8 +102,8 @@ export default function AppHeader({
   const resolvedUser = useMemo(() => {
     const roleLabel = user?.roleLabel ?? defaultRoleLabel(role);
     return {
-      name: user?.name ?? "Rahaf B",
-      initials: user?.initials ?? "RB",
+      name: user?.name ?? "Ahmed B",
+      initials: user?.initials ?? "AB",
       roleLabel,
     };
   }, [role, user]);

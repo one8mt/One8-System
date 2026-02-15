@@ -5,9 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Progress } from "../ui/progress";
 import {
-  PieChart,
-  Pie,
-  Cell,
   BarChart,
   Bar,
   LineChart,
@@ -16,7 +13,6 @@ import {
   YAxis,
   ResponsiveContainer,
   Tooltip,
-  Legend,
   CartesianGrid,
 } from "recharts";
 import {
@@ -28,7 +24,8 @@ import {
   ThumbsDown,
   User,
 } from "lucide-react";
-import { chartColors, getTooltipStyle, getAxisStyle } from "../ChartColors";
+import { chartColors, getTooltipStyle, getTooltipTextStyle, getAxisStyle } from "../ChartColors";
+import { DonutChart } from "../shared/DonutChart";
 import { ClientFeedbackModal } from "./modals/ClientFeedbackModal";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { KpiCards } from "../shared/KpiCards";
@@ -306,27 +303,12 @@ export function ObjectiveFeedback({ userRole }: ObjectiveFeedbackProps) {
                 <CardTitle>Feedback Type</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={statusData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={60}
-                        outerRadius={100}
-                        paddingAngle={5}
-                        dataKey="value"
-                      >
-                        {statusData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
+                <DonutChart
+                  data={statusData}
+                  paddingAngle={5}
+                  showLegend
+                  legendProps={{ wrapperStyle: { color: "var(--muted-foreground)" } }}
+                />
               </CardContent>
             </Card>
 
@@ -341,7 +323,11 @@ export function ObjectiveFeedback({ userRole }: ObjectiveFeedbackProps) {
                     <BarChart data={feedbackByProductData}>
                       <XAxis dataKey="product" {...getAxisStyle()} />
                       <YAxis {...getAxisStyle()} />
-                      <Tooltip contentStyle={getTooltipStyle()} />
+                      <Tooltip
+                        contentStyle={getTooltipStyle()}
+                        itemStyle={getTooltipTextStyle()}
+                        labelStyle={getTooltipTextStyle()}
+                      />
                       <Bar dataKey="feedback" fill={chartColors.primary} radius={4} />
                     </BarChart>
                   </ResponsiveContainer>
@@ -362,7 +348,11 @@ export function ObjectiveFeedback({ userRole }: ObjectiveFeedbackProps) {
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                     <XAxis dataKey="month" {...getAxisStyle()} />
                     <YAxis domain={[0, 5]} {...getAxisStyle()} />
-                    <Tooltip contentStyle={getTooltipStyle()} />
+                    <Tooltip
+                      contentStyle={getTooltipStyle()}
+                      itemStyle={getTooltipTextStyle()}
+                      labelStyle={getTooltipTextStyle()}
+                    />
                     <Line
                       type="monotone"
                       dataKey="score"

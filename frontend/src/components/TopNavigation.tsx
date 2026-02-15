@@ -128,7 +128,7 @@ export function TopNavigation({
             >
               <div className="text-right hidden sm:block">
                 <div className="flex items-center gap-2">
-                  <p className="text-sm font-medium">Rahaf B</p>
+                  <p className="text-sm font-medium">Ahmed B</p>
                   {/* <Badge variant={userRole === 'manager' ? 'default' : 'secondary'} className="text-xs">
                     {userRole === 'manager' ? 'Manager' : 'Employee'}
                   </Badge> */}
@@ -145,7 +145,7 @@ export function TopNavigation({
               </div>
               <Avatar className="h-8 w-8">
                 <AvatarImage src="/api/placeholder/32/32" alt="User" />
-                <AvatarFallback>RB</AvatarFallback>
+                <AvatarFallback>AB</AvatarFallback>
               </Avatar>
               <ChevronDown className="h-4 w-4 text-muted-foreground" />
             </Button>

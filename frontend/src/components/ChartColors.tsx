@@ -5,7 +5,7 @@ export const chartColors = {
   tertiary: "#f59e0b", // Amber
   quaternary: "#ef4444", // Red
   quinary: "#8b5cf6", // Purple
-  grid: "hsl(var(--border))",
+  grid: "var(--border)",
 
   // Status colors
   success: "#10b981",
@@ -14,20 +14,24 @@ export const chartColors = {
   info: "#3b82f6",
 
   // Neutral colors that adapt to theme
-  text: "hsl(var(--muted-foreground))",
-  border: "hsl(var(--border))",
-  background: "hsl(var(--popover))",
-  foreground: "hsl(var(--popover-foreground))",
+  text: "var(--muted-foreground)",
+  border: "var(--border)",
+  background: "var(--popover)",
+  foreground: "var(--popover-foreground)",
 };
 
 export const getTooltipStyle = () => ({
-  backgroundColor: "hsl(var(--popover))",
-  border: "1px solid hsl(var(--border))",
+  backgroundColor: "var(--popover)",
+  border: "1px solid var(--border)",
   borderRadius: "var(--radius)",
-  color: "hsl(var(--popover-foreground))",
+  color: "var(--popover-foreground)",
+});
+
+export const getTooltipTextStyle = () => ({
+  color: "var(--popover-foreground)",
 });
 
 export const getAxisStyle = () => ({
-  tick: { fill: "hsl(var(--muted-foreground))" },
-  axisLine: { stroke: "hsl(var(--border))" },
+  tick: { fill: "var(--muted-foreground)" },
+  axisLine: { stroke: "var(--border)" },
 });
