@@ -197,6 +197,53 @@ html {
 }
 
 /* =========================
+   SCROLLBAR VISIBILITY
+========================= */
+.crm-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.8) rgba(148, 163, 184, 0.2);
+  scrollbar-gutter: stable both-edges;
+}
+
+.crm-scrollbar::-webkit-scrollbar {
+  height: 6px;
+}
+
+.crm-scrollbar::-webkit-scrollbar-track {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 999px;
+}
+
+.crm-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.8);
+  border-radius: 999px;
+}
+
+.crm-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.95);
+}
+
+.dark .crm-scrollbar,
+:root[data-theme="dark"] .crm-scrollbar {
+  scrollbar-color: rgba(203, 213, 225, 0.85) rgba(148, 163, 184, 0.25);
+}
+
+.dark .crm-scrollbar::-webkit-scrollbar-track,
+:root[data-theme="dark"] .crm-scrollbar::-webkit-scrollbar-track {
+  background: rgba(148, 163, 184, 0.25);
+}
+
+.dark .crm-scrollbar::-webkit-scrollbar-thumb,
+:root[data-theme="dark"] .crm-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(203, 213, 225, 0.85);
+}
+
+.dark .crm-scrollbar::-webkit-scrollbar-thumb:hover,
+:root[data-theme="dark"] .crm-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(226, 232, 240, 0.95);
+}
+
+/* =========================
    ONE8 LAYOUT HELPERS
 ========================= */
 /* .one8-container {

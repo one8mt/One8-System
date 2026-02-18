@@ -5,6 +5,7 @@ import { InventoryDashboard } from './src/components/InventoryDashboard';
 import { CRMDashboard } from './src/components/CRMDashboard';
 import { HomeDashboard } from './src/components/HomeDashboard';
 import { SupplierPortal } from './src/components/SupplierPortal';
+import { IncidentRequest } from './src/components/IncidentRequest';
 import { Toaster } from './src/components/ui/sonner';
 
 export default function App() {
@@ -66,8 +67,12 @@ export default function App() {
             userRole={userRole}
           />
         )}
+
+        {userRole !== 'supplier' && userRole !== 'client' && activeModule === 'Incident Request' && (
+          <IncidentRequest />
+        )}
         
-        {userRole !== 'supplier' && activeModule !== 'Home' && activeModule !== 'Procurement' && activeModule !== 'Inventory' && activeModule !== 'CRM' && activeModule !== 'HR' && userRole !== 'client' && (
+        {userRole !== 'supplier' && activeModule !== 'Home' && activeModule !== 'Procurement' && activeModule !== 'Inventory' && activeModule !== 'CRM' && activeModule !== 'HR' && activeModule !== 'Incident Request' && userRole !== 'client' && (
           <div className="flex items-center justify-center h-96">
             <div className="text-center">
               <h2 className="mb-2">{activeModule} Module</h2>

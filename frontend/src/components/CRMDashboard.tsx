@@ -126,7 +126,7 @@ export function CRMDashboard({
 
       {/* Subsection Navigation Cards - Hide when viewing client details */}
       {!selectedClientId && (
-        <div className="flex gap-6 overflow-x-auto px-1 py-2">
+        <div className="flex gap-6 overflow-x-auto px-1 py-2 crm-scrollbar">
           {visibleSubsections.map((section) => {
             const isActive = activeSubsection === section.id;
             const IconComponent = section.icon;

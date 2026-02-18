@@ -6,6 +6,12 @@ export type KpiItem = {
   change: string;
   icon: React.ComponentType<{ className?: string }>;
   changeTone?: 'positive' | 'negative' | 'neutral';
+  hideChange?: boolean;
+  cardClassName?: string;
+  titleClassName?: string;
+  valueClassName?: string;
+  iconClassName?: string;
+  onClick?: () => void;
 };
 
 interface KpiCardsProps {
@@ -43,24 +49,40 @@ export function KpiCards({ items, className, size = 'default' }: KpiCardsProps) 
               ? 'text-red-600 dark:text-red-400'
               : 'text-muted-foreground';
 
-        return (
-        <Card
-          key={index}
-          className={cardToneClass}
-        >
-          <CardContent className={contentPadding}>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className={titleClass}>{kpi.title}</p>
-                <p className={valueClass}>{kpi.value}</p>
-                <p className={`text-sm ${textToneClass}`}>
-                  {kpi.change} from last month
-                </p>
+        const cardContent = (
+          <Card
+            className={`${cardToneClass ?? ''} ${kpi.cardClassName ?? ''}`.trim()}
+          >
+            <CardContent className={contentPadding}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className={`${titleClass} ${kpi.titleClassName ?? ''}`.trim()}>{kpi.title}</p>
+                  <p className={`${valueClass} ${kpi.valueClassName ?? ''}`.trim()}>{kpi.value}</p>
+                  {!kpi.hideChange && (
+                    <p className={`text-sm ${textToneClass}`}>
+                      {kpi.change} from last month
+                    </p>
+                  )}
+                </div>
+                <kpi.icon className={`${iconSizeClass} ${kpi.iconClassName ?? textToneClass}`} />
               </div>
-              <kpi.icon className={`${iconSizeClass} ${textToneClass}`} />
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        );
+
+        return kpi.onClick ? (
+          <button
+            key={index}
+            type="button"
+            onClick={kpi.onClick}
+            className="text-left w-full transition ring-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B3AAE]"
+          >
+            {cardContent}
+          </button>
+        ) : (
+          <div key={index}>
+            {cardContent}
+          </div>
         );
       })}
     </div>

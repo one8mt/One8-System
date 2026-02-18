@@ -21,7 +21,7 @@ interface TopNavigationProps {
   setUserRole: (role: 'employee' | 'manager' | 'client' | 'supplier') => void;
 }
 
-const erpModules = ['Home', 'Procurement', 'Finance', 'CRM', 'Inventory'];
+const erpModules = ['Home', 'Procurement', 'Finance', 'CRM', 'Inventory', 'Incident Request'];
 const procurementSubsections = ['Purchase Requisitions', 'Requests for Quotation', 'Purchase Orders'];
 
 export function TopNavigation({
