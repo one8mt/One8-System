@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Progress } from '../ui/progress';
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { Plus, FileText, Clock, CheckCircle, XCircle, Inbox, FileEdit, UserCheck, AlertCircle } from 'lucide-react';
 import { AddPRForm } from './forms/AddPRForm';
 import { chartColors, getTooltipStyle, getAxisStyle } from '../ChartColors';
@@ -16,6 +16,7 @@ import { ProcurementStatusBadge } from '../shared/ProcurementStatusBadge';
 import { StatusIcon } from '../shared/StatusIcon';
 import { ChartCard } from '../shared/ChartCard';
 import { RecentListCard } from '../shared/RecentListCard';
+import { DonutChart } from '../shared/DonutChart';
 
 interface PurchaseRequisitionsProps {
   userRole: 'employee' | 'manager';
@@ -184,27 +185,14 @@ export function PurchaseRequisitions({ userRole, showAddForm, setShowAddForm }: 
       {userRole === 'manager' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <ChartCard title="Requisitions by Status">
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={statusData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {statusData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+            <DonutChart
+              data={statusData}
+              className="h-64"
+              innerRadius={60}
+              outerRadius={100}
+              paddingAngle={5}
+              showLegend
+            />
           </ChartCard>
 
           <ChartCard title="Monthly Trend">

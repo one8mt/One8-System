@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Progress } from '../ui/progress';
-import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip, PieChart, Pie, Cell } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { Plus, ShoppingCart, Package, TrendingUp, DollarSign, AlertTriangle, ClipboardList, Truck, CheckSquare } from 'lucide-react';
 import { AddPOForm } from './forms/AddPOForm';
 import { InventoryBadge } from '../InventoryBadge';
@@ -13,6 +13,7 @@ import { KpiCards } from '../shared/KpiCards';
 import { ProcurementStatusBadge } from '../shared/ProcurementStatusBadge';
 import { ChartCard } from '../shared/ChartCard';
 import { RecentListCard } from '../shared/RecentListCard';
+import { DonutChart } from '../shared/DonutChart';
 
 interface PurchaseOrdersProps {
   userRole: 'employee' | 'manager';
@@ -209,26 +210,16 @@ export function PurchaseOrders({ userRole, showAddForm, setShowAddForm }: Purcha
           </ChartCard>
 
           <ChartCard title="Order Status Distribution">
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={statusDistribution}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {statusDistribution.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value, name) => [`${value} orders`, name]} />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+            <DonutChart
+              data={statusDistribution}
+              className="h-64"
+              innerRadius={60}
+              outerRadius={100}
+              paddingAngle={5}
+              tooltipProps={{
+                formatter: (value, name) => [`${value} orders`, name],
+              }}
+            />
             <div className="flex justify-center mt-4 space-x-4">
               {statusDistribution.map((item, index) => (
                 <div key={index} className="flex items-center space-x-2">

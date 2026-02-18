@@ -3,12 +3,10 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { KpiCards } from './shared/KpiCards';
 import { chartColors, getTooltipStyle, getAxisStyle } from './ChartColors';
+import { DonutChart } from './shared/DonutChart';
 import { 
   BarChart, 
   LineChart, 
-  PieChart, 
-  Pie, 
-  Cell, 
   Bar, 
   Line, 
   XAxis, 
@@ -172,29 +170,16 @@ export function HomeDashboard({ userRole }: HomeDashboardProps) {
             <CardTitle>Process Status Distribution</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={statusDistribution}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {statusDistribution.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip 
-                    formatter={(value, name) => [`${value}%`, name]}
-                    contentStyle={getTooltipStyle()}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+            <DonutChart
+              data={statusDistribution}
+              className="h-64"
+              innerRadius={60}
+              outerRadius={100}
+              paddingAngle={5}
+              tooltipProps={{
+                formatter: (value, name) => [`${value}%`, name],
+              }}
+            />
             <div className="flex justify-center mt-4 space-x-4">
               {statusDistribution.map((item, index) => (
                 <div key={index} className="flex items-center space-x-2">

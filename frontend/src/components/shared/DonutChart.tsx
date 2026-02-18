@@ -20,6 +20,7 @@ type DonutChartProps = {
   showLegend?: boolean;
   legendProps?: React.ComponentProps<typeof Legend>;
   showTooltip?: boolean;
+  tooltipProps?: React.ComponentProps<typeof Tooltip>;
 };
 
 export function DonutChart({
@@ -31,6 +32,7 @@ export function DonutChart({
   showLegend = false,
   legendProps,
   showTooltip = true,
+  tooltipProps,
 }: DonutChartProps) {
   return (
     <div className={cn("h-64", className)}>
@@ -56,6 +58,7 @@ export function DonutChart({
               contentStyle={getTooltipStyle()}
               itemStyle={getTooltipTextStyle()}
               labelStyle={getTooltipTextStyle()}
+              {...tooltipProps}
             />
           )}
           {showLegend && (() => {
