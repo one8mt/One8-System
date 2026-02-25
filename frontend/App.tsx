@@ -3,10 +3,17 @@ import { TopNavigation } from './src/components/TopNavigation';
 import { ProcurementDashboard } from './src/components/ProcurementDashboard';
 import { InventoryDashboard } from './src/components/InventoryDashboard';
 import { CRMDashboard } from './src/components/CRMDashboard';
+import { NewCRMDashboard } from './src/components/NewCRMDashboard';
 import { HomeDashboard } from './src/components/HomeDashboard';
 import { SupplierPortal } from './src/components/SupplierPortal';
 import { IncidentRequest } from './src/components/IncidentRequest';
 import { Toaster } from './src/components/ui/sonner';
+
+type IncidentNotification = {
+  invoiceNumber: string;
+  itemsWithIncidents: number;
+  submittedAt: string;
+};
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -14,6 +21,8 @@ export default function App() {
   const [activeSubsection, setActiveSubsection] = useState('Purchase Requisitions');
   const [activeInventorySubsection, setActiveInventorySubsection] = useState('Returns');
   const [activeCRMSubsection, setActiveCRMSubsection] = useState('Objective Feedback');
+  const [incidentNotifications, setIncidentNotifications] = useState(0);
+  const [lastIncidentNotification, setLastIncidentNotification] = useState<IncidentNotification | null>(null);
   const [userRole, setUserRole] = useState<'employee' | 'manager' | 'client' | 'supplier'>('manager');
 
   const toggleDarkMode = () => {
@@ -68,11 +77,24 @@ export default function App() {
           />
         )}
 
+        {userRole !== 'supplier' && activeModule === 'NewCrm' && (
+          <NewCRMDashboard
+            userRole={userRole}
+            incidentNotificationCount={incidentNotifications}
+            incidentNotification={lastIncidentNotification}
+          />
+        )}
+
         {userRole !== 'supplier' && userRole !== 'client' && activeModule === 'Incident Request' && (
-          <IncidentRequest />
+          <IncidentRequest
+            onIncidentSubmitted={(payload) => {
+              setIncidentNotifications((prev) => prev + 1);
+              setLastIncidentNotification(payload);
+            }}
+          />
         )}
         
-        {userRole !== 'supplier' && activeModule !== 'Home' && activeModule !== 'Procurement' && activeModule !== 'Inventory' && activeModule !== 'CRM' && activeModule !== 'HR' && activeModule !== 'Incident Request' && userRole !== 'client' && (
+        {userRole !== 'supplier' && activeModule !== 'Home' && activeModule !== 'Procurement' && activeModule !== 'Inventory' && activeModule !== 'CRM' && activeModule !== 'NewCrm' && activeModule !== 'HR' && activeModule !== 'Incident Request' && userRole !== 'client' && (
           <div className="flex items-center justify-center h-96">
             <div className="text-center">
               <h2 className="mb-2">{activeModule} Module</h2>

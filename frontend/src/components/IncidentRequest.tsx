@@ -7,6 +7,8 @@ import { Badge } from './ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 import { RefreshCw, Repeat, AlertTriangle, Search, Edit, Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import { IncidentReturnsRequests } from './incident/IncidentReturnsRequests';
+import { toast } from 'sonner';
 
 interface FormData {
   invoiceNumber: string;
@@ -95,7 +97,17 @@ const mockInvoiceItems: Item[] = [
   { id: '5', itemName: 'Monitor 27" 4K Display', quantity: 3, requestedQuantity: 0, price: 599.99, incidentType: null }
 ];
 
-export function IncidentRequest() {
+interface IncidentRequestProps {
+  onIncidentSubmitted?: (payload: {
+    invoiceNumber: string;
+    itemsWithIncidents: number;
+    submittedAt: string;
+  }) => void;
+}
+
+export function IncidentRequest({
+  onIncidentSubmitted,
+}: IncidentRequestProps) {
   const [step, setStep] = useState<'invoice' | 'details' | 'incidents'>('invoice');
   const [formData, setFormData] = useState<FormData>({
     invoiceNumber: '',
@@ -104,6 +116,7 @@ export function IncidentRequest() {
   });
   const [selectedIncidents, setSelectedIncidents] = useState<string[]>([]);
   const [items, setItems] = useState<Item[]>(mockInvoiceItems);
+  const itemsWithIncidents = items.filter(i => i.incidentType).length;
 
   const handleInvoiceSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -445,8 +458,24 @@ export function IncidentRequest() {
                       </div>
                       <Button 
                         size="lg"
-                        disabled={items.filter(i => i.incidentType).length === 0}
+                        disabled={itemsWithIncidents === 0}
                         className="bg-[#0B3AAE] hover:bg-[#0B3AAE]/90 text-white"
+                        onClick={() => {
+                          if (itemsWithIncidents === 0) return;
+                          const invoiceNumber = formData.invoiceNumber || 'INV-UNSET';
+                          onIncidentSubmitted?.({
+                            invoiceNumber,
+                            itemsWithIncidents,
+                            submittedAt: new Date().toISOString(),
+                          });
+                          toast.success('Incident request submitted', {
+                            description: `Invoice ${invoiceNumber} submitted. We will review and get back to you soon.`,
+                          });
+                          setFormData({ invoiceNumber: '', email: '', phone: '' });
+                          setSelectedIncidents([]);
+                          setItems(mockInvoiceItems);
+                          setStep('invoice');
+                        }}
                       >
                         Submit Incident Request
                       </Button>
