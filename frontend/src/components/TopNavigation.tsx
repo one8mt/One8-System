@@ -128,7 +128,7 @@ export function TopNavigation({
             >
               <div className="text-right hidden sm:block">
                 <div className="flex items-center gap-2">
-                  <p className="text-sm font-medium">Ahmed B</p>
+                  <p className="text-sm font-medium">Ahmed S.</p>
                   {/* <Badge variant={userRole === 'manager' ? 'default' : 'secondary'} className="text-xs">
                     {userRole === 'manager' ? 'Manager' : 'Employee'}
                   </Badge> */}

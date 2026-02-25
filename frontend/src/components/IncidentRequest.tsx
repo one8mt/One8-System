@@ -5,7 +5,8 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Badge } from './ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
-import { RefreshCw, Repeat, AlertTriangle, Search, Edit } from 'lucide-react';
+import { RefreshCw, Repeat, AlertTriangle, Search, Edit, Info } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 interface FormData {
   invoiceNumber: string;
@@ -223,7 +224,23 @@ export function IncidentRequest() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email" className="flex items-center gap-2">
+                      Email
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            className="text-muted-foreground hover:text-foreground"
+                            aria-label="Email help"
+                          >
+                            <Info className="h-3.5 w-3.5" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          Please use the email associated with this invoice.
+                        </TooltipContent>
+                      </Tooltip>
+                    </Label>
                     <Input
                       id="email"
                       type="email"
@@ -265,10 +282,14 @@ export function IncidentRequest() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
-                  <div className="flex-1 grid grid-cols-3 gap-4">
+                  <div className="flex-1 grid grid-cols-4 gap-4">
                     <div>
                       <p className="text-xs text-muted-foreground">Invoice Number</p>
                       <p className="font-medium">{formData.invoiceNumber}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Invoice Date &amp; Time</p>
+                      <p className="font-medium">Feb 18, 2026 at 2:35 PM</p>
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground">Email</p>
