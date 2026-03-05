@@ -253,10 +253,11 @@ html {
   padding-right: 111px;
 } */
 
-.one8-container{
+.one8-container {
   max-width: 1410px;
   margin: 0 auto;
-  padding: 20px 111px; /* أو اللي عندك إذا هو مضبوط */
+  padding: 20px 111px;
+  /* أو اللي عندك إذا هو مضبوط */
 }
 
 .one8-stack-20 {

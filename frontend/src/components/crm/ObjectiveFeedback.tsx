@@ -146,9 +146,9 @@ export function ObjectiveFeedback({ userRole }: ObjectiveFeedbackProps) {
 
   const getHealthStatus = (status: string) =>
     (["Healthy", "At Risk", "Monitor"].includes(status) ? status : "Monitor") as
-      | "Healthy"
-      | "At Risk"
-      | "Monitor";
+    | "Healthy"
+    | "At Risk"
+    | "Monitor";
 
   const getFeedbackStatus = (status: string) =>
     (["Resolved", "Pending"].includes(status) ? status : "Pending") as "Resolved" | "Pending";
@@ -159,9 +159,8 @@ export function ObjectiveFeedback({ userRole }: ObjectiveFeedbackProps) {
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            className={`h-4 w-4 ${
-              star <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300 dark:text-gray-600"
-            }`}
+            className={`h-4 w-4 ${star <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300 dark:text-gray-600"
+              }`}
           />
         ))}
       </div>
@@ -290,14 +289,10 @@ export function ObjectiveFeedback({ userRole }: ObjectiveFeedbackProps) {
 
       {/* KPI Cards - Manager Only */}
       {userRole !== "client" && (
-        <KpiCards items={managerKpiData} />
-      )}
+        <div className="space-y-6">
+          <KpiCards items={managerKpiData} />
 
-      {/* Charts - Manager Only */}
-      {userRole !== "client" && (
-        <>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Feedback Type Distribution Chart */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4">
             <Card>
               <CardHeader>
                 <CardTitle>Feedback Type</CardTitle>
@@ -312,7 +307,6 @@ export function ObjectiveFeedback({ userRole }: ObjectiveFeedbackProps) {
               </CardContent>
             </Card>
 
-            {/* Feedback by Product */}
             <Card>
               <CardHeader>
                 <CardTitle>Feedback by Product</CardTitle>
@@ -336,7 +330,6 @@ export function ObjectiveFeedback({ userRole }: ObjectiveFeedbackProps) {
             </Card>
           </div>
 
-          {/* Satisfaction Trend - Full Width */}
           <Card>
             <CardHeader>
               <CardTitle>Satisfaction Trend (CSAT)</CardTitle>
@@ -365,59 +358,9 @@ export function ObjectiveFeedback({ userRole }: ObjectiveFeedbackProps) {
               </div>
             </CardContent>
           </Card>
-        </>
+        </div>
       )}
 
-      {/* Process Status - Client Health Summary */}
-      {userRole !== "client" && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Client Health Summary</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                      Healthy
-                    </span>
-                    <span className="text-muted-foreground">3 clients</span>
-                  </div>
-                  <Progress value={60} className="h-2 [&>div]:bg-green-500" />
-                </div>
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                      Monitor
-                    </span>
-                    <span className="text-muted-foreground">1 client</span>
-                  </div>
-                  <Progress value={20} className="h-2 [&>div]:bg-yellow-500" />
-                </div>
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                      At Risk
-                    </span>
-                    <span className="text-muted-foreground">1 client</span>
-                  </div>
-                  <Progress value={20} className="h-2 [&>div]:bg-red-500" />
-                </div>
-              </div>
-              <div className="flex items-center justify-center">
-                <div className="text-center">
-                  <p className="text-3xl font-semibold mb-1 text-green-600">78%</p>
-                  <p className="text-muted-foreground">Positive Feedback Rate</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Recent Feedback Logs */}
       <Card>

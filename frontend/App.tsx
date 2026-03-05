@@ -3,7 +3,7 @@ import { TopNavigation } from './src/components/TopNavigation';
 import { ProcurementDashboard } from './src/components/ProcurementDashboard';
 import { InventoryDashboard } from './src/components/InventoryDashboard';
 import { CRMDashboard } from './src/components/CRMDashboard';
-import { NewCRMDashboard } from './src/components/NewCRMDashboard';
+import { NewCRMDashboard } from './src/components/new_crm/NewCRMDashboard';
 import { HomeDashboard } from './src/components/HomeDashboard';
 import { SupplierPortal } from './src/components/SupplierPortal';
 import { IncidentRequest } from './src/components/IncidentRequest';
@@ -43,16 +43,16 @@ export default function App() {
         userRole={userRole}
         setUserRole={setUserRole}
       />
-      
+
       <main className="pt-16">
         {userRole === 'supplier' && (
           <SupplierPortal />
         )}
-        
+
         {userRole !== 'supplier' && activeModule === 'Home' && userRole !== 'client' && (
           <HomeDashboard userRole={userRole} />
         )}
-        
+
         {userRole !== 'supplier' && activeModule === 'Procurement' && userRole !== 'client' && (
           <ProcurementDashboard
             activeSubsection={activeSubsection}
@@ -60,7 +60,7 @@ export default function App() {
             userRole={userRole}
           />
         )}
-        
+
         {userRole !== 'supplier' && activeModule === 'Inventory' && userRole !== 'client' && (
           <InventoryDashboard
             activeSubsection={activeInventorySubsection}
@@ -68,7 +68,7 @@ export default function App() {
             userRole={userRole}
           />
         )}
-        
+
         {userRole !== 'supplier' && activeModule === 'CRM' && (
           <CRMDashboard
             activeSubsection={activeCRMSubsection}
@@ -93,7 +93,7 @@ export default function App() {
             }}
           />
         )}
-        
+
         {userRole !== 'supplier' && activeModule !== 'Home' && activeModule !== 'Procurement' && activeModule !== 'Inventory' && activeModule !== 'CRM' && activeModule !== 'NewCrm' && activeModule !== 'HR' && activeModule !== 'Incident Request' && userRole !== 'client' && (
           <div className="flex items-center justify-center h-96">
             <div className="text-center">

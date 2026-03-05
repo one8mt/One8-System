@@ -5,11 +5,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Input } from "../ui/input";
 import { Progress } from "../ui/progress";
-import { Star, UserCircle, ChevronDown, Upload } from "lucide-react";
+import { Star, UserCircle, ChevronDown, Upload, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { RequestStatusBadge } from "../shared/RequestStatusBadge";
 import { CrmReturnModeBadge, CrmReturnTypeBadge } from "../shared/CrmReturnBadges";
+import { Button } from "../ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Textarea } from "../ui/textarea";
+import { motion, useAnimation, useMotionValue, useTransform, AnimatePresence } from "framer-motion";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Label } from "../ui/label";
 import { DonutChart } from "../shared/DonutChart";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recharts";
 
@@ -35,7 +46,7 @@ const returnsRequestsData = [
     returnMode: "Partial",
     amount: "SAR 8,920",
     rating: 3,
-    status: "Approved",
+    status: "New",
     progress: 100,
   },
   {
@@ -71,7 +82,7 @@ const returnsRequestsData = [
     returnMode: "Partial",
     amount: "SAR 3,450",
     rating: 4,
-    status: "Pending",
+    status: "New",
     progress: 60,
   },
   {
@@ -107,7 +118,7 @@ const returnsRequestsData = [
     returnMode: "Full",
     amount: "SAR 9,320",
     rating: 5,
-    status: "Pending",
+    status: "New",
     progress: 55,
   },
   {
@@ -131,7 +142,7 @@ const returnsRequestsData = [
     returnMode: "Full",
     amount: "SAR 11,450",
     rating: 4,
-    status: "Approved",
+    status: "New",
     progress: 75,
   },
   {
@@ -212,77 +223,20 @@ export function IncidentReturnsRequests() {
   const [selectedReturn, setSelectedReturn] = useState<typeof returnsRequestsData[0] | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [expandedColumns, setExpandedColumns] = useState({
-    refund: false,
-    missing: false,
-    damaged: false,
-    exchange: false,
-  });
-
-  const returnTypeStyles: Record<
-    "Refund" | "Missing" | "Damaged" | "Exchange",
-    { badge: string; label: string; card: string }
-  > = {
-    Refund: {
-      badge:
-        "bg-green-50 text-green-700 border-green-200 dark:bg-green-950/40 dark:text-green-300 dark:border-green-800/70",
-      label: "text-green-700 dark:text-green-300",
-      card: "border-green-200/70 bg-green-50/30 dark:border-green-800/70 dark:bg-green-950/20",
-    },
-    Missing: {
-      badge:
-        "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800/70",
-      label: "text-blue-700 dark:text-blue-300",
-      card: "border-blue-200/70 bg-blue-50/30 dark:border-blue-800/70 dark:bg-blue-950/20",
-    },
-    Damaged: {
-      badge:
-        "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-800/70",
-      label: "text-red-700 dark:text-red-300",
-      card: "border-red-200/70 bg-red-50/30 dark:border-red-800/70 dark:bg-red-950/20",
-    },
-    Exchange: {
-      badge:
-        "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-900/60 dark:text-amber-200 dark:border-amber-700",
-      label: "text-amber-800 dark:text-amber-200",
-      card: "border-amber-300/70 bg-amber-50/40 dark:border-amber-700 dark:bg-amber-900/30",
-    },
-  };
-  const returnTypeButtonClasses: Record<"Refund" | "Missing" | "Damaged" | "Exchange", string> = {
-    Refund:
-      "border-green-200 bg-green-50 text-green-700 hover:bg-green-100 dark:border-green-900 dark:bg-green-950 dark:text-green-300 dark:hover:bg-green-900/60",
-    Missing:
-      "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900/60",
-    Damaged:
-      "border-red-200 bg-red-50 text-red-700 hover:bg-red-100 dark:border-red-900 dark:bg-red-950 dark:text-red-300 dark:hover:bg-red-900/60",
-    Exchange:
-      "border-amber-300 bg-amber-100 text-amber-800 hover:bg-amber-200/70 dark:border-amber-700 dark:bg-amber-900/60 dark:text-amber-200 dark:hover:bg-amber-900/80",
-  };
-
-  const refundReturns = returnsRequestsData.filter((r) => r.returnType === "Refund");
-  const missingReturns = returnsRequestsData.filter((r) => r.returnType === "Missing");
-  const damagedReturns = returnsRequestsData.filter((r) => r.returnType === "Damage");
-  const exchangeReturns = returnsRequestsData.filter((r) => r.returnType === "Exchange");
-  const maxVisible = 6;
-  const returnsByProductData = [
-    { name: "Cement 50kg", value: 80, color: "#22c55e" },
-    { name: "Steel Rods", value: 30, color: "#ef4444" },
-    { name: "Paint Cans", value: 60, color: "#eab308" },
-    { name: "Tiles", value: 45, color: "#3b82f6" },
-  ];
 
   const getRequestStatus = (status: string) =>
-    (["Approved", "Flagged", "Pending"].includes(status) ? status : "Pending") as
-      | "Approved"
-      | "Flagged"
-      | "Pending";
+    (["Approved", "Flagged", "Pending", "New"].includes(status) ? status : "New") as
+    | "Approved"
+    | "Flagged"
+    | "Pending"
+    | "New";
 
   const getReturnType = (type: string) =>
     (["Refund", "Missing", "Damage", "Exchange"].includes(type) ? type : "Refund") as
-      | "Refund"
-      | "Missing"
-      | "Damage"
-      | "Exchange";
+    | "Refund"
+    | "Missing"
+    | "Damage"
+    | "Exchange";
 
   const getReturnMode = (mode: string) =>
     (["Full", "Partial"].includes(mode) ? mode : "Full") as "Full" | "Partial";
@@ -293,9 +247,8 @@ export function IncidentReturnsRequests() {
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            className={`h-4 w-4 ${
-              star <= rating ? "fill-yellow-400 text-yellow-400" : "fill-gray-200 text-gray-200"
-            }`}
+            className={`h-4 w-4 ${star <= rating ? "fill-yellow-400 text-yellow-400" : "fill-gray-200 text-gray-200"
+              }`}
           />
         ))}
       </div>
@@ -346,28 +299,28 @@ export function IncidentReturnsRequests() {
           id: `${returnRequest.id}-ITEM-2`,
           name: "Office Chair Ergonomic",
           quantity: 5,
-          requestedQuantity: 0,
+          requestedQuantity: 2,
           unitPrice: "SAR 1,050",
-          incidentType: "None",
-          selected: false,
+          incidentType: "Damage",
+          selected: true,
         },
         {
           id: `${returnRequest.id}-ITEM-3`,
           name: "Wireless Mouse Logitech",
           quantity: 10,
-          requestedQuantity: 0,
+          requestedQuantity: 1,
           unitPrice: "SAR 120",
-          incidentType: "None",
-          selected: false,
+          incidentType: "Exchange",
+          selected: true,
         },
         {
           id: `${returnRequest.id}-ITEM-4`,
           name: "USB-C Hub Multiport",
           quantity: 8,
-          requestedQuantity: 0,
+          requestedQuantity: 1,
           unitPrice: "SAR 190",
-          incidentType: "None",
-          selected: false,
+          incidentType: "Missing",
+          selected: true,
         },
       ],
     };
@@ -379,296 +332,10 @@ export function IncidentReturnsRequests() {
   const handleSelectReturn = (returnRequest: typeof returnsRequestsData[0]) => {
     setSelectedReturn(returnRequest);
     setIsDetailsOpen(true);
-    setTimeout(() => {
-      const target = document.getElementById("incident-return-details");
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }, 0);
   };
 
   return (
     <div id="incident-returns-requests" className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Returns Requests</CardTitle>
-          <p className="text-sm text-muted-foreground">Track all your return requests</p>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className={`font-medium ${returnTypeStyles.Refund.label}`}>Refund</h4>
-                <Badge variant="outline" className={returnTypeStyles.Refund.badge}>
-                  {refundReturns.length}
-                </Badge>
-              </div>
-              {(expandedColumns.refund ? refundReturns : refundReturns.slice(0, maxVisible)).map(
-                (returnRequest) => (
-                  <div
-                    key={returnRequest.id}
-                    className={`p-3 border rounded-lg transition-colors space-y-2 cursor-pointer ${returnTypeStyles.Refund.card}`}
-                    onClick={() => handleSelectReturn(returnRequest)}
-                  >
-                    <p className="font-medium">{returnRequest.id}</p>
-                    <p className="text-sm text-muted-foreground">{returnRequest.invoiceNumber}</p>
-                    <p className="text-sm">From: {returnRequest.clientName}</p>
-                    <p className="text-xs text-muted-foreground">
-                      Created: {returnRequest.created}
-                    </p>
-                  </div>
-                )
-              )}
-              {refundReturns.length > maxVisible && (
-                <div className="flex justify-center">
-                  <button
-                    type="button"
-                    className={`text-xs font-medium px-3 py-1 rounded-full border transition-colors ${returnTypeButtonClasses.Refund}`}
-                    onClick={() =>
-                      setExpandedColumns((prev) => ({ ...prev, refund: !prev.refund }))
-                    }
-                  >
-                    {expandedColumns.refund
-                      ? "Show less"
-                      : `Show more (${refundReturns.length - maxVisible})`}
-                  </button>
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className={`font-medium ${returnTypeStyles.Missing.label}`}>Missing</h4>
-                <Badge variant="outline" className={returnTypeStyles.Missing.badge}>
-                  {missingReturns.length}
-                </Badge>
-              </div>
-              {(expandedColumns.missing ? missingReturns : missingReturns.slice(0, maxVisible)).map(
-                (returnRequest) => (
-                  <div
-                    key={returnRequest.id}
-                    className={`p-3 border rounded-lg transition-colors space-y-2 cursor-pointer ${returnTypeStyles.Missing.card}`}
-                    onClick={() => handleSelectReturn(returnRequest)}
-                  >
-                    <p className="font-medium">{returnRequest.id}</p>
-                    <p className="text-sm text-muted-foreground">{returnRequest.invoiceNumber}</p>
-                    <p className="text-sm">From: {returnRequest.clientName}</p>
-                    <p className="text-xs text-muted-foreground">
-                      Created: {returnRequest.created}
-                    </p>
-                  </div>
-                )
-              )}
-              {missingReturns.length > maxVisible && (
-                <div className="flex justify-center">
-                  <button
-                    type="button"
-                    className={`text-xs font-medium px-3 py-1 rounded-full border transition-colors ${returnTypeButtonClasses.Missing}`}
-                    onClick={() =>
-                      setExpandedColumns((prev) => ({ ...prev, missing: !prev.missing }))
-                    }
-                  >
-                    {expandedColumns.missing
-                      ? "Show less"
-                      : `Show more (${missingReturns.length - maxVisible})`}
-                  </button>
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className={`font-medium ${returnTypeStyles.Damaged.label}`}>Damaged</h4>
-                <Badge variant="outline" className={returnTypeStyles.Damaged.badge}>
-                  {damagedReturns.length}
-                </Badge>
-              </div>
-              {(expandedColumns.damaged ? damagedReturns : damagedReturns.slice(0, maxVisible)).map(
-                (returnRequest) => (
-                  <div
-                    key={returnRequest.id}
-                    className={`p-3 border rounded-lg transition-colors space-y-2 cursor-pointer ${returnTypeStyles.Damaged.card}`}
-                    onClick={() => handleSelectReturn(returnRequest)}
-                  >
-                    <p className="font-medium">{returnRequest.id}</p>
-                    <p className="text-sm text-muted-foreground">{returnRequest.invoiceNumber}</p>
-                    <p className="text-sm">From: {returnRequest.clientName}</p>
-                    <p className="text-xs text-muted-foreground">
-                      Created: {returnRequest.created}
-                    </p>
-                  </div>
-                )
-              )}
-              {damagedReturns.length > maxVisible && (
-                <div className="flex justify-center">
-                  <button
-                    type="button"
-                    className={`text-xs font-medium px-3 py-1 rounded-full border transition-colors ${returnTypeButtonClasses.Damaged}`}
-                    onClick={() =>
-                      setExpandedColumns((prev) => ({ ...prev, damaged: !prev.damaged }))
-                    }
-                  >
-                    {expandedColumns.damaged
-                      ? "Show less"
-                      : `Show more (${damagedReturns.length - maxVisible})`}
-                  </button>
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className={`font-medium ${returnTypeStyles.Exchange.label}`}>Exchange</h4>
-                <Badge variant="outline" className={returnTypeStyles.Exchange.badge}>
-                  {exchangeReturns.length}
-                </Badge>
-              </div>
-              {(expandedColumns.exchange ? exchangeReturns : exchangeReturns.slice(0, maxVisible)).map(
-                (returnRequest) => (
-                  <div
-                    key={returnRequest.id}
-                    className={`p-3 border rounded-lg transition-colors space-y-2 cursor-pointer ${returnTypeStyles.Exchange.card}`}
-                    onClick={() => handleSelectReturn(returnRequest)}
-                  >
-                    <p className="font-medium">{returnRequest.id}</p>
-                    <p className="text-sm text-muted-foreground">{returnRequest.invoiceNumber}</p>
-                    <p className="text-xs text-muted-foreground">
-                      Created: {returnRequest.created}
-                    </p>
-                  </div>
-                )
-              )}
-              {exchangeReturns.length > maxVisible && (
-                <div className="flex justify-center">
-                  <button
-                    type="button"
-                    className={`text-xs font-medium px-3 py-1 rounded-full border transition-colors ${returnTypeButtonClasses.Exchange}`}
-                    onClick={() =>
-                      setExpandedColumns((prev) => ({ ...prev, exchange: !prev.exchange }))
-                    }
-                  >
-                    {expandedColumns.exchange
-                      ? "Show less"
-                      : `Show more (${exchangeReturns.length - maxVisible})`}
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Return Types</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <DonutChart
-              data={[
-                { name: "Refund", value: refundReturns.length, color: "#22c55e" },
-                { name: "Exchange", value: exchangeReturns.length, color: "#eab308" },
-                { name: "Damaged", value: damagedReturns.length, color: "#ef4444" },
-                { name: "Missing", value: missingReturns.length, color: "#3b82f6" },
-              ]}
-              className="h-64"
-              outerRadius={90}
-            />
-            <div className="flex items-center justify-center gap-6 mt-4 text-sm">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-green-500 rounded-sm" />
-                <span>Refund</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-yellow-500 rounded-sm" />
-                <span>Exchange</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-red-500 rounded-sm" />
-                <span>Damaged</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-blue-500 rounded-sm" />
-                <span>Missing</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Returns by Product</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={returnsByProductData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis dataKey="name" tick={false} />
-                  <YAxis />
-                  <Tooltip
-                    content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
-                        return (
-                          <div className="bg-background border rounded-lg p-2 shadow-lg">
-                            <p className="text-sm font-medium">{payload[0].payload.name}</p>
-                            <p className="text-sm text-muted-foreground">{payload[0].value} returns</p>
-                          </div>
-                        );
-                      }
-                      return null;
-                    }}
-                  />
-                  <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                    {returnsByProductData.map((entry) => (
-                      <Cell key={entry.name} fill={entry.color} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Return Requests Completion Rate</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    In Process
-                  </span>
-                  <span className="text-muted-foreground">12 requisitions</span>
-                </div>
-                <Progress value={27} className="h-2 [&>div]:bg-yellow-500" />
-              </div>
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                    Completed
-                  </span>
-                  <span className="text-muted-foreground">33 requisitions</span>
-                </div>
-                <Progress value={73} className="h-2 [&>div]:bg-green-500" />
-              </div>
-            </div>
-            <div className="flex items-center justify-center">
-              <div className="text-center">
-                <p className="text-3xl font-semibold mb-1 text-green-600">73%</p>
-                <p className="text-muted-foreground">Completion Rate</p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
       <Dialog
         open={isDetailsOpen && !!selectedReturn}
         onOpenChange={(open) => {
@@ -678,9 +345,9 @@ export function IncidentReturnsRequests() {
           }
         }}
       >
-      <DialogContent className="w-[92vw] max-w-[1200px] h-[88vh] overflow-hidden p-4 rounded-2xl left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2 text-sm">
+        <DialogContent className="w-[92vw] max-w-[1200px] max-h-[88vh] p-0 rounded-2xl">
           {selectedReturn && (
-            <>
+            <div className="relative w-full overflow-hidden flex flex-col rounded-2xl bg-background border shadow-2xl p-6 overflow-y-auto crm-scrollbar">
               <DialogHeader>
                 <DialogTitle>
                   {selectedReturn.returnType} Request - {selectedReturn.id}
@@ -689,7 +356,7 @@ export function IncidentReturnsRequests() {
               {(() => {
                 const details = getDetailFor(selectedReturn);
                 return (
-                  <div className="space-y-3">
+                  <div className="space-y-3 mt-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       <div className="space-y-2">
                         <label className="text-xs font-medium">Client Name</label>
@@ -707,46 +374,14 @@ export function IncidentReturnsRequests() {
                         <label className="text-xs font-medium">Date &amp; Time</label>
                         <Input value={details.dateTime} disabled={!isEditMode} />
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-medium">Return Type</label>
-                        <div className="relative">
-                          <select
-                            className="w-full h-10 rounded-md border bg-muted/30 pl-3 pr-9 text-sm appearance-none disabled:bg-muted/60 disabled:text-muted-foreground disabled:border-border"
-                            value={selectedReturn.returnType}
-                            disabled={!isEditMode}
-                            onChange={() => {}}
-                          >
-                            <option value="Refund">Refund</option>
-                            <option value="Missing">Missing</option>
-                            <option value="Damage">Damaged</option>
-                            <option value="Exchange">Exchange</option>
-                          </select>
-                          <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-medium">Return Mode</label>
-                        <div className="relative">
-                          <select
-                            className="w-full h-10 rounded-md border bg-muted/30 pl-3 pr-9 text-sm appearance-none disabled:bg-muted/60 disabled:text-muted-foreground disabled:border-border"
-                            value={selectedReturn.returnMode}
-                            disabled={!isEditMode}
-                            onChange={() => {}}
-                          >
-                            <option value="Full">Full</option>
-                            <option value="Partial">Partial</option>
-                          </select>
-                          <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                        </div>
-                      </div>
                     </div>
 
                     <div>
                       <h3 className="text-xs font-medium mb-1">Items</h3>
-                      <Table>
+                      <Table className="text-xs">
                         <TableHeader>
                           <TableRow>
-                            <TableHead className="w-16">Type</TableHead>
+                            <TableHead className="w-12">Type</TableHead>
                             <TableHead>Item Name</TableHead>
                             <TableHead className="text-center">Quantity</TableHead>
                             <TableHead className="text-center">Qty</TableHead>
@@ -754,24 +389,17 @@ export function IncidentReturnsRequests() {
                             <TableHead className="text-right">Total</TableHead>
                           </TableRow>
                         </TableHeader>
-                        <TableBody className="text-xs">
+                        <TableBody>
                           {details.items.map((item) => (
-                            <TableRow
-                              key={item.id}
-                              className={item.selected ? "bg-green-50/80 dark:bg-green-950/40" : ""}
-                            >
+                            <TableRow key={item.id}>
                               <TableCell>
-                                <div
-                                  className={`w-9 h-9 rounded-md ${
-                                    item.selected ? "bg-green-500" : getIncidentTypeStyle(item.incidentType)
-                                  }`}
-                                />
+                                <div className={`w-6 h-6 rounded-md ${getIncidentTypeStyle(item.incidentType)}`} />
                               </TableCell>
                               <TableCell className="font-medium">{item.name}</TableCell>
                               <TableCell className="text-center">{item.quantity}</TableCell>
-                              <TableCell className="text-center">{item.requestedQuantity}</TableCell>
+                              <TableCell className="text-center font-bold">{item.requestedQuantity}</TableCell>
                               <TableCell className="text-right">{item.unitPrice}</TableCell>
-                              <TableCell className="text-right">
+                              <TableCell className="text-right font-bold">
                                 SAR {(parseSar(item.unitPrice) * item.requestedQuantity).toLocaleString()}
                               </TableCell>
                             </TableRow>
@@ -780,35 +408,16 @@ export function IncidentReturnsRequests() {
                       </Table>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-xs font-medium">Upload Attachment</label>
-                        <label className="flex items-center justify-center gap-2 w-full h-10 rounded-md border bg-background text-sm cursor-pointer hover:bg-muted/50">
-                          <Upload className="h-4 w-4 text-muted-foreground" />
-                          <span>Choose File</span>
-                          <input type="file" className="hidden" />
-                        </label>
-                      </div>
-                      <div className="flex items-end justify-end gap-3">
-                        <button
-                          type="button"
-                          className="px-4 py-2 rounded-md border"
-                          onClick={() => setIsEditMode((prev) => !prev)}
-                        >
-                          {isEditMode ? "View" : "Edit"}
-                        </button>
-                        <button
-                          type="button"
-                          className="px-4 py-2 rounded-md bg-[#0B3AAE] text-white"
-                        >
-                          Confirm
-                        </button>
-                      </div>
+                    <div className="flex justify-end gap-3 mt-6">
+                      <Button variant="outline" onClick={() => setIsDetailsOpen(false)}>Close</Button>
+                      <Button onClick={() => setIsEditMode(!isEditMode)}>
+                        {isEditMode ? "Save Changes" : "Edit Request"}
+                      </Button>
                     </div>
                   </div>
                 );
               })()}
-            </>
+            </div>
           )}
         </DialogContent>
       </Dialog>
@@ -882,3 +491,4 @@ export function IncidentReturnsRequests() {
     </div>
   );
 }
+
