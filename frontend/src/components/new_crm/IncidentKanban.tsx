@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Input } from "../ui/input";
@@ -11,214 +11,26 @@ import { CrmReturnModeBadge, CrmReturnTypeBadge } from "../shared/CrmReturnBadge
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Textarea } from "../ui/textarea";
-import { motion, useAnimation, useMotionValue, useTransform, AnimatePresence } from "framer-motion";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 import { Label } from "../ui/label";
-import { DonutChart } from "../shared/DonutChart";
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recharts";
 
-const returnsRequestsData = [
-  {
-    id: "RET-001",
-    clientName: "Global Retail Group",
-    created: "Sep 20",
-    invoiceNumber: "INV-2024-1145",
-    returnType: "Refund",
-    returnMode: "Full",
-    amount: "SAR 12,450",
-    rating: 4,
-    status: "Pending",
-    progress: 45,
-  },
-  {
-    id: "RET-002",
-    clientName: "Tech Solutions Inc",
-    created: "Sep 19",
-    invoiceNumber: "INV-2024-1144",
-    returnType: "Missing",
-    returnMode: "Partial",
-    amount: "SAR 8,920",
-    rating: 3,
-    status: "New",
-    progress: 100,
-  },
-  {
-    id: "RET-003",
-    clientName: "Manufacturing Co Ltd",
-    created: "Sep 18",
-    invoiceNumber: "INV-2024-1143",
-    returnType: "Damage",
-    returnMode: "Partial",
-    amount: "SAR 5,670",
-    rating: 2,
-    status: "Flagged",
-    progress: 30,
-  },
-  {
-    id: "RET-004",
-    clientName: "Office Supplies Plus",
-    created: "Sep 17",
-    invoiceNumber: "INV-2024-1142",
-    returnType: "Exchange",
-    returnMode: "Full",
-    amount: "SAR 15,230",
-    rating: 5,
-    status: "Approved",
-    progress: 85,
-  },
-  {
-    id: "RET-005",
-    clientName: "Wholesale Distributors",
-    created: "Sep 16",
-    invoiceNumber: "INV-2024-1141",
-    returnType: "Refund",
-    returnMode: "Partial",
-    amount: "SAR 3,450",
-    rating: 4,
-    status: "New",
-    progress: 60,
-  },
-  {
-    id: "RET-006",
-    clientName: "ABC Corporation",
-    created: "Sep 15",
-    invoiceNumber: "INV-2024-1140",
-    returnType: "Refund",
-    returnMode: "Full",
-    amount: "SAR 7,890",
-    rating: 3,
-    status: "Approved",
-    progress: 90,
-  },
-  {
-    id: "RET-007",
-    clientName: "TechMart LLC",
-    created: "Sep 14",
-    invoiceNumber: "INV-2024-1139",
-    returnType: "Missing",
-    returnMode: "Partial",
-    amount: "SAR 4,560",
-    rating: 2,
-    status: "Flagged",
-    progress: 25,
-  },
-  {
-    id: "RET-008",
-    clientName: "Global Retail Group",
-    created: "Sep 13",
-    invoiceNumber: "INV-2024-1138",
-    returnType: "Refund",
-    returnMode: "Full",
-    amount: "SAR 9,320",
-    rating: 5,
-    status: "New",
-    progress: 55,
-  },
-  {
-    id: "RET-009",
-    clientName: "Supply Chain Inc",
-    created: "Sep 12",
-    invoiceNumber: "INV-2024-1137",
-    returnType: "Damage",
-    returnMode: "Partial",
-    amount: "SAR 6,780",
-    rating: 3,
-    status: "Pending",
-    progress: 40,
-  },
-  {
-    id: "RET-010",
-    clientName: "Eastern Traders",
-    created: "Sep 11",
-    invoiceNumber: "INV-2024-1136",
-    returnType: "Exchange",
-    returnMode: "Full",
-    amount: "SAR 11,450",
-    rating: 4,
-    status: "New",
-    progress: 75,
-  },
-  {
-    id: "RET-011",
-    clientName: "Metro Supplies",
-    created: "Sep 10",
-    invoiceNumber: "INV-2024-1135",
-    returnType: "Missing",
-    returnMode: "Partial",
-    amount: "SAR 5,230",
-    rating: 2,
-    status: "Pending",
-    progress: 35,
-  },
-  {
-    id: "RET-012",
-    clientName: "Global Retail Group",
-    created: "Sep 9",
-    invoiceNumber: "INV-2024-1134",
-    returnType: "Refund",
-    returnMode: "Partial",
-    amount: "SAR 8,120",
-    rating: 4,
-    status: "Approved",
-    progress: 95,
-  },
-  {
-    id: "RET-013",
-    clientName: "Pacific Wholesale",
-    created: "Sep 8",
-    invoiceNumber: "INV-2024-1133",
-    returnType: "Exchange",
-    returnMode: "Full",
-    amount: "SAR 13,670",
-    rating: 5,
-    status: "Pending",
-    progress: 65,
-  },
-  {
-    id: "RET-014",
-    clientName: "Northern Distributors",
-    created: "Sep 7",
-    invoiceNumber: "INV-2024-1132",
-    returnType: "Missing",
-    returnMode: "Partial",
-    amount: "SAR 3,890",
-    rating: 3,
-    status: "Approved",
-    progress: 80,
-  },
-  {
-    id: "RET-015",
-    clientName: "Global Retail Group",
-    created: "Sep 6",
-    invoiceNumber: "INV-2024-1131",
-    returnType: "Refund",
-    returnMode: "Full",
-    amount: "SAR 10,560",
-    rating: 4,
-    status: "Pending",
-    progress: 50,
-  },
-  {
-    id: "RET-016",
-    clientName: "Desert Innovations",
-    created: "Sep 5",
-    invoiceNumber: "INV-2024-1130",
-    returnType: "Refund",
-    returnMode: "Partial",
-    amount: "SAR 6,230",
-    rating: 3,
-    status: "Approved",
-    progress: 88,
-  },
-];
+export type ReturnRequestOptions = {
+  id: string;
+  realId: string;
+  clientName: string;
+  created: string;
+  invoiceNumber: string;
+  returnType: string;
+  returnMode: string;
+  amount: string;
+  rating: number;
+  status: string;
+  progress: number;
+  notes?: string;
+  attachment?: any;
+  items: any[];
+};
 
-export type ReturnRequestOptions = typeof returnsRequestsData[0];
 const SwipeableListCard = ({
   returnRequest,
   isSwipeable,
@@ -287,21 +99,61 @@ const SwipeableListCard = ({
       </div>
       <p className="text-xs text-muted-foreground">{returnRequest.invoiceNumber}</p>
       <p className="text-[10px] text-muted-foreground font-normal">From: {returnRequest.clientName}</p>
-      <p className="text-[10px] text-muted-foreground">
-        Created: {returnRequest.created}
-      </p>
+      <div className="flex items-center justify-between">
+        <p className="text-[10px] text-muted-foreground">
+          {returnRequest.created}
+        </p>
+        <p className="text-[10px] font-semibold text-foreground">{returnRequest.amount}</p>
+      </div>
     </motion.div>
   );
 };
 
 export function IncidentKanban() {
-  const [selectedReturn, setSelectedReturn] = useState<typeof returnsRequestsData[0] | null>(null);
+  const [returnsRequestsData, setReturnsRequestsData] = useState<ReturnRequestOptions[]>([]);
+  const [selectedReturn, setSelectedReturn] = useState<ReturnRequestOptions | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [swipeableCardIds, setSwipeableCardIds] = useState<string[]>([]);
   const [actionPath, setActionPath] = useState<'employee' | 'client' | null>(null);
 
-  const handleCardSwipe = (path: "employee" | "client", returnRequest: typeof returnsRequestsData[0]) => {
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/incidents/")
+      .then((res) => res.json())
+      .then((data: any[]) => {
+        const mapped = data.map((incident) => {
+          const uniqueTypes = [...new Set(incident.items?.map((item: any) => item.incident_type) || [])];
+          return {
+            id: incident.id.slice(0, 8).toUpperCase(), // Use short UUID as ID
+            realId: incident.id,
+            clientName: incident.client_name,
+            created: new Date(incident.created_at).toLocaleDateString("en-US", { month: 'short', day: 'numeric' }),
+            invoiceNumber: incident.invoice_id,
+            returnType: uniqueTypes.length > 1 ? "Mixed" : (uniqueTypes[0] || "Refund"),
+            returnMode: (incident.items?.length > 1) ? "Partial" : "Full",
+            amount: "SAR " + (incident.items?.reduce((acc: number, item: any) => acc + (item.quantity * parseFloat(item.unit_price || "0")), 0) || 0).toLocaleString(),
+            rating: 4,
+            status: incident.status,
+            progress: incident.status === "Approved" ? 100 : incident.status === "Pending" ? 45 : 10,
+            notes: incident.notes,
+            attachment: incident.attachment,
+            items: (incident.items || []).map((item: any) => ({
+              id: item.id,
+              name: item.item_name,
+              quantity: item.quantity + 2, // Mock total qty
+              requestedQuantity: item.quantity,
+              unitPrice: "SAR " + parseFloat(item.unit_price || "0").toLocaleString(),
+              incidentType: item.incident_type,
+              selected: true
+            }))
+          };
+        });
+        setReturnsRequestsData(mapped);
+      })
+      .catch(err => console.error("Error fetching incidents:", err));
+  }, []);
+
+  const handleCardSwipe = (path: "employee" | "client", returnRequest: ReturnRequestOptions) => {
     setSelectedReturn(returnRequest);
     setActionPath(path);
     setIsDetailsOpen(true);
@@ -334,11 +186,12 @@ export function IncidentKanban() {
     | "New";
 
   const getReturnType = (type: string) =>
-    (["Refund", "Missing", "Damage", "Exchange"].includes(type) ? type : "Refund") as
+    (["Refund", "Missing", "Damage", "Exchange", "Mixed"].includes(type) ? type : "Refund") as
     | "Refund"
     | "Missing"
     | "Damage"
-    | "Exchange";
+    | "Exchange"
+    | "Mixed";
 
   const getReturnMode = (mode: string) =>
     (["Full", "Partial"].includes(mode) ? mode : "Full") as "Full" | "Partial";
@@ -373,73 +226,20 @@ export function IncidentKanban() {
     }
   };
 
-  const getDetailFor = (returnRequest: typeof returnsRequestsData[0]) => {
-    const emailSlug = returnRequest.clientName.toLowerCase().replace(/[^a-z0-9]/g, "");
-    const dateTime = `${returnRequest.created}, 2025 2:35 PM`;
-    const itemNameByType: Record<string, string> = {
-      Refund: "Laptop Dell XPS 15",
-      Missing: "Network Switch 48-Port",
-      Damage: "Industrial Drill Set",
-      Exchange: "Ergonomic Chair Pro",
-    };
-    const itemName = itemNameByType[returnRequest.returnType] || "Selected Item";
-
+  const getDetailFor = (returnRequest: ReturnRequestOptions) => {
     return {
-      email: `${emailSlug}@client.com`,
-      dateTime,
-      items: [
-        {
-          id: `${returnRequest.id}-ITEM-1`,
-          name: itemName,
-          quantity: 2,
-          requestedQuantity: 1,
-          unitPrice: "SAR 1,250",
-          incidentType: returnRequest.returnType,
-          selected: true,
-        },
-        {
-          id: `${returnRequest.id}-ITEM-2`,
-          name: "Office Chair Ergonomic",
-          quantity: 5,
-          requestedQuantity: 2,
-          unitPrice: "SAR 1,050",
-          incidentType: "Damage",
-          selected: true,
-        },
-        {
-          id: `${returnRequest.id}-ITEM-3`,
-          name: "Wireless Mouse Logitech",
-          quantity: 10,
-          requestedQuantity: 1,
-          unitPrice: "SAR 120",
-          incidentType: "Exchange",
-          selected: true,
-        },
-        {
-          id: `${returnRequest.id}-ITEM-4`,
-          name: "USB-C Hub Multiport",
-          quantity: 8,
-          requestedQuantity: 1,
-          unitPrice: "SAR 190",
-          incidentType: "Missing",
-          selected: true,
-        },
-      ],
+      email: `${returnRequest.clientName.toLowerCase().replace(/[^a-z0-9]/g, "")}@client.com`,
+      dateTime: `${returnRequest.created}, 2026 2:35 PM`,
+      items: returnRequest.items
     };
   };
 
   const parseSar = (value: string) =>
     Number(value.replace(/[^\d.]/g, "")) || 0;
 
-  const handleSelectReturn = (returnRequest: typeof returnsRequestsData[0]) => {
+  const handleSelectReturn = (returnRequest: ReturnRequestOptions) => {
     setSelectedReturn(returnRequest);
     setIsDetailsOpen(true);
-    setTimeout(() => {
-      const target = document.getElementById("incident-return-details");
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }, 0);
   };
 
   return (
@@ -491,15 +291,17 @@ export function IncidentKanban() {
                       {clientReturns.length}
                     </Badge>
                   </div>
-                  {visibleReturns.map((returnRequest) => (
-                    <SwipeableListCard
-                      key={returnRequest.id}
-                      returnRequest={returnRequest}
-                      isSwipeable={swipeableCardIds.includes(returnRequest.id)}
-                      onClick={() => handleSelectReturn(returnRequest)}
-                      onSwipe={(path) => handleCardSwipe(path, returnRequest)}
-                    />
-                  ))}
+                  <div className="space-y-3">
+                    {visibleReturns.map((returnRequest) => (
+                      <SwipeableListCard
+                        key={returnRequest.id}
+                        returnRequest={returnRequest}
+                        isSwipeable={swipeableCardIds.includes(returnRequest.id)}
+                        onClick={() => handleSelectReturn(returnRequest)}
+                        onSwipe={(path) => handleCardSwipe(path, returnRequest)}
+                      />
+                    ))}
+                  </div>
                   {clientReturns.length > maxVisible && (
                     <div className="flex justify-center">
                       <button
@@ -517,13 +319,6 @@ export function IncidentKanban() {
           </div>
         </CardContent>
       </Card>
-
-
-
-
-
-
-
 
       <Dialog
         open={isDetailsOpen && !!selectedReturn}
@@ -544,10 +339,7 @@ export function IncidentKanban() {
         >
           {selectedReturn && (
             <div className="relative w-full overflow-hidden flex flex-col rounded-2xl">
-
-              <div
-                className="w-full bg-background border shadow-2xl overflow-y-auto crm-scrollbar p-6 rounded-2xl z-10 pb-8 flex-1 max-h-[88vh]"
-              >
+              <div className="w-full bg-background border shadow-2xl overflow-y-auto crm-scrollbar p-6 rounded-2xl z-10 pb-8 flex-1 max-h-[88vh]">
                 {actionPath === null ? (
                   <>
                     <DialogHeader>
@@ -559,61 +351,36 @@ export function IncidentKanban() {
                       const details = getDetailFor(selectedReturn);
                       return (
                         <div className="space-y-3 mt-4">
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                            <div className="space-y-2">
-                              <label className="text-xs font-medium">Client Name</label>
-                              <Input value={selectedReturn.clientName} disabled={!isEditMode} />
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div className="space-y-1">
+                              <Label className="text-xs">Client Name</Label>
+                              <Input value={selectedReturn.clientName} readOnly className="h-9 text-xs" />
                             </div>
-                            <div className="space-y-2">
-                              <label className="text-xs font-medium">Invoice Number</label>
-                              <Input value={selectedReturn.invoiceNumber} disabled={!isEditMode} />
+                            <div className="space-y-1">
+                              <Label className="text-xs">Invoice Number</Label>
+                              <Input value={selectedReturn.invoiceNumber} readOnly className="h-9 text-xs" />
                             </div>
-                            <div className="space-y-2">
-                              <label className="text-xs font-medium">Email</label>
-                              <Input value={details.email} disabled={!isEditMode} />
-                            </div>
-                            <div className="space-y-2">
-                              <label className="text-xs font-medium">Date &amp; Time</label>
-                              <Input value={details.dateTime} disabled={!isEditMode} />
-                            </div>
-                            <div className="space-y-2">
-                              <label className="text-xs font-medium">Return Type</label>
-                              <div className="relative">
-                                <select
-                                  className="w-full h-10 rounded-md border bg-muted/30 pl-3 pr-9 text-sm appearance-none disabled:bg-muted/60 disabled:text-muted-foreground disabled:border-border"
-                                  value={selectedReturn.returnType}
-                                  disabled={!isEditMode}
-                                  onChange={() => { }}
-                                >
-                                  <option value="Refund">Refund</option>
-                                  <option value="Missing">Missing</option>
-                                  <option value="Damage">Damaged</option>
-                                  <option value="Exchange">Exchange</option>
-                                </select>
-                                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                              </div>
-                            </div>
-                            <div className="space-y-2">
-                              <label className="text-xs font-medium">Return Mode</label>
-                              <div className="relative">
-                                <select
-                                  className="w-full h-10 rounded-md border bg-muted/30 pl-3 pr-9 text-sm appearance-none disabled:bg-muted/60 disabled:text-muted-foreground disabled:border-border"
-                                  value={selectedReturn.returnMode}
-                                  disabled={!isEditMode}
-                                  onChange={() => { }}
-                                >
-                                  <option value="Full">Full</option>
-                                  <option value="Partial">Partial</option>
-                                </select>
-                                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                              </div>
+                            <div className="space-y-1">
+                              <Label className="text-xs">Return Mode</Label>
+                              <Input value={selectedReturn.returnMode} readOnly className="h-9 text-xs" />
                             </div>
                           </div>
 
-                          <div>
-                            <h3 className="text-xs font-medium mb-1">Items</h3>
-                            <Table className="[&_td]:px-2 [&_td]:py-1 [&_th]:px-2 [&_th]:py-1 text-xs">
-                              <TableHeader>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                              <Label className="text-xs">Email</Label>
+                              <Input value={details.email} readOnly className="h-9 text-xs" />
+                            </div>
+                            <div className="space-y-1">
+                              <Label className="text-xs">Date & Time</Label>
+                              <Input value={details.dateTime} readOnly className="h-9 text-xs" />
+                            </div>
+                          </div>
+
+                          <div className="mt-4">
+                            <h3 className="text-xs font-semibold mb-2">Items</h3>
+                            <Table className="[&_td]:px-2 [&_td]:py-1 [&_th]:px-2 [&_th]:py-1 text-xs border rounded-md overflow-hidden">
+                              <TableHeader className="bg-muted/50">
                                 <TableRow>
                                   <TableHead className="w-12">Type</TableHead>
                                   <TableHead className="text-[11px]">Item Name</TableHead>
@@ -623,8 +390,8 @@ export function IncidentKanban() {
                                   <TableHead className="text-right text-[10px]">Total</TableHead>
                                 </TableRow>
                               </TableHeader>
-                              <TableBody className="text-xs">
-                                {details.items.map((item) => {
+                              <TableBody>
+                                {details.items.map((item: any) => {
                                   let highlightColor = "";
                                   if (item.selected) {
                                     if (item.incidentType === "Refund") highlightColor = "text-green-600 dark:text-green-400 font-bold";
@@ -637,7 +404,7 @@ export function IncidentKanban() {
                                   return (
                                     <TableRow
                                       key={item.id}
-                                      className={item.selected ? "bg-muted/30" : ""}
+                                      className={item.selected ? "bg-muted/10 border-b" : "border-b"}
                                     >
                                       <TableCell>
                                         <div
@@ -658,44 +425,87 @@ export function IncidentKanban() {
                             </Table>
                           </div>
 
-                          <div className="space-y-2 mt-4 pt-4 border-t border-border">
-                            <h3 className="text-sm font-medium">Internal Note & Attachments</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div className="space-y-1">
+                          <div className="space-y-4 mt-4 pt-4 border-t">
+                            <h3 className="text-sm font-semibold">Internal Note & Attachments</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <div className="space-y-2">
                                 <Label className="text-xs">Internal Note (Optional)</Label>
-                                <Textarea placeholder="Add instructions, updates, or details..." rows={2} className="resize-none min-h-[60px] text-xs" />
+                                <Textarea
+                                  placeholder="Add instructions, updates, or details..."
+                                  rows={2}
+                                  value={selectedReturn.notes || ""}
+                                  onChange={(e) => {
+                                    const updated = { ...selectedReturn, notes: e.target.value };
+                                    setSelectedReturn(updated);
+                                    setReturnsRequestsData(prev => prev.map(r => r.realId === selectedReturn.realId ? updated : r));
+                                  }}
+                                  className="resize-none min-h-[80px] text-xs"
+                                />
                               </div>
-                              <div className="space-y-1">
+                              <div className="space-y-2">
                                 <Label className="text-xs">Upload Attachment (Optional)</Label>
-                                <label className="flex items-center justify-center gap-2 w-full h-[60px] rounded-md border-2 border-dashed border-muted-foreground/30 bg-muted/10 text-xs cursor-pointer hover:bg-muted/30 transition-colors">
-                                  <Upload className="h-4 w-4 text-muted-foreground" />
-                                  <span className="text-muted-foreground font-medium">Click to upload files</span>
-                                  <input type="file" className="hidden" />
+                                <label className="flex flex-col items-center justify-center gap-2 w-full h-[80px] rounded-md border-2 border-dashed border-muted-foreground/30 bg-muted/5 text-xs cursor-pointer hover:bg-muted/10 transition-colors group">
+                                  <Upload className="h-5 w-5 text-muted-foreground group-hover:scale-110 transition-transform" />
+                                  <span className="text-muted-foreground font-medium px-4 text-center">
+                                    {selectedReturn.attachment ? (typeof selectedReturn.attachment === 'string' ? selectedReturn.attachment.split('/').pop() : 'File selected') : 'Click to upload files'}
+                                  </span>
+                                  <input
+                                    type="file"
+                                    className="hidden"
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file) {
+                                        const updated = { ...selectedReturn, attachment: file };
+                                        setSelectedReturn(updated);
+                                      }
+                                    }}
+                                  />
                                 </label>
                               </div>
                             </div>
                           </div>
 
-                          <div className="pt-3 mt-4 border-t border-border">
-                            <div className="flex justify-between items-center pt-2">
-                              <button
-                                type="button"
-                                className="px-4 py-2 rounded-md border h-10 hover:bg-muted transition-colors"
-                                onClick={() => setIsEditMode((prev) => !prev)}
-                              >
-                                {isEditMode ? "View" : "Edit"}
-                              </button>
-                              <button
-                                type="button"
-                                className="px-6 py-2.5 rounded-md bg-[#0B3AAE] text-white font-medium shadow-md hover:bg-blue-700 transition"
-                                onClick={() => {
-                                  setSwipeableCardIds((prev) => [...new Set([...prev, selectedReturn.id])]);
-                                  setIsDetailsOpen(false);
-                                }}
-                              >
-                                Submit
-                              </button>
-                            </div>
+                          <div className="flex justify-end gap-3 pt-6 mt-6 border-t">
+                            <button
+                              type="button"
+                              className="px-6 py-2.5 rounded-md border h-10 hover:bg-muted font-medium transition-colors"
+                              onClick={() => setIsDetailsOpen(false)}
+                            >
+                              Close
+                            </button>
+                            <button
+                              type="button"
+                              className="px-8 py-2.5 rounded-md bg-[#0B3AAE] text-white font-semibold shadow-md hover:bg-blue-700 transition"
+                              onClick={async () => {
+                                const formData = new FormData();
+                                formData.append('notes', selectedReturn.notes || '');
+                                if (selectedReturn.attachment instanceof File) {
+                                  formData.append('attachment', selectedReturn.attachment);
+                                }
+
+                                try {
+                                  const resp = await fetch(`http://127.0.0.1:8000/api/incidents/${selectedReturn.realId}/`, {
+                                    method: 'PATCH',
+                                    body: formData,
+                                  });
+                                  if (resp.ok) {
+                                    const updatedIncident = await resp.json();
+                                    setReturnsRequestsData(prev => prev.map(r => r.realId === selectedReturn.realId ? {
+                                      ...r,
+                                      notes: updatedIncident.notes,
+                                      attachment: updatedIncident.attachment
+                                    } : r));
+
+                                    setSwipeableCardIds((prev) => [...new Set([...prev, selectedReturn.id])]);
+                                    setIsDetailsOpen(false);
+                                  }
+                                } catch (err) {
+                                  console.error("Failed to update incident", err);
+                                }
+                              }}
+                            >
+                              Submit
+                            </button>
                           </div>
                         </div>
                       );
@@ -712,20 +522,11 @@ export function IncidentKanban() {
                       </p>
                       <div className="space-y-2">
                         <Label className="text-blue-900 dark:text-blue-200">Employee</Label>
-                        <Select>
-                          <SelectTrigger className="border-blue-200 focus:ring-blue-500 bg-white dark:bg-black/50">
-                            <SelectValue placeholder="Choose an employee..." />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="emp1">Ahmed Al-Faisal (Logistics)</SelectItem>
-                            <SelectItem value="emp2">Sarah Smith (Returns)</SelectItem>
-                            <SelectItem value="emp3">Mohammed Khalid (Warehouse)</SelectItem>
-                          </SelectContent>
-                        </Select>
+                        <Input placeholder="Search employee..." className="border-blue-200" />
                       </div>
                       <div className="flex justify-end gap-3 pt-4 mt-6">
                         <button type="button" className="px-5 py-2.5 rounded-md border border-blue-200 text-blue-700 dark:text-blue-400 font-medium hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors" onClick={() => { setActionPath(null); setIsDetailsOpen(false); }}>Cancel</button>
-                        <button type="button" className="px-5 py-2.5 rounded-md bg-[#0B3AAE] hover:bg-blue-700 text-white font-medium shadow-md transition" onClick={() => setIsDetailsOpen(false)}>Inform</button>
+                        <button type="button" className="px-5 py-2.5 rounded-md bg-[#0B3AAE] hover:bg-blue-700 text-white font-medium shadow-md transition" onClick={() => setIsDetailsOpen(false)}>Assign</button>
                       </div>
                     </div>
                   </div>
@@ -759,7 +560,7 @@ export function IncidentKanban() {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
-            <div className="max-h-[400px] overflow-y-scroll">
+            <div className="max-h-[400px] overflow-y-scroll crm-scrollbar">
               <table className="w-full">
                 <thead className="sticky top-0 bg-background z-10">
                   <tr className="border-b">
@@ -816,6 +617,6 @@ export function IncidentKanban() {
           </div>
         </CardContent>
       </Card>
-    </div >
+    </div>
   );
 }

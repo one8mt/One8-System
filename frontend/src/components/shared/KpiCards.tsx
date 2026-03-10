@@ -5,7 +5,7 @@ export type KpiItem = {
   value: string;
   change: string;
   icon: React.ComponentType<{ className?: string }>;
-  changeTone?: 'positive' | 'negative' | 'neutral';
+  changeTone?: 'positive' | 'negative' | 'neutral' | 'primary' | 'info';
   hideChange?: boolean;
   cardClassName?: string;
   titleClassName?: string;
@@ -40,14 +40,22 @@ export function KpiCards({ items, className, size = 'default' }: KpiCardsProps) 
             ? '!border-green-200 !bg-green-50/60 dark:!border-green-800/70 dark:!bg-green-950/40'
             : changeTone === 'negative'
               ? '!border-red-200 !bg-red-50/60 dark:!border-red-800/70 dark:!bg-red-950/40'
-              : undefined;
+              : changeTone === 'primary'
+                ? '!border-blue-200 !bg-blue-50/60 dark:!border-blue-800/70 dark:!bg-blue-950/40'
+                : changeTone === 'info'
+                  ? '!border-indigo-200 !bg-indigo-50/60 dark:!border-indigo-800/70 dark:!bg-indigo-950/40'
+                  : undefined;
 
         const textToneClass =
           changeTone === 'positive'
             ? 'text-green-600 dark:text-green-400'
             : changeTone === 'negative'
               ? 'text-red-600 dark:text-red-400'
-              : 'text-muted-foreground';
+              : changeTone === 'primary'
+                ? 'text-blue-600 dark:text-blue-400'
+                : changeTone === 'info'
+                  ? 'text-indigo-600 dark:text-indigo-400'
+                  : 'text-muted-foreground';
 
         const cardContent = (
           <Card

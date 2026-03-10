@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { ArrowLeft, CheckCircle, Search, Clock, ShieldCheck, Mail, Phone, Calendar, Package, AlertCircle, X, ChevronRight, Check, Upload, RefreshCw, Repeat, AlertTriangle, Edit, Info } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
+import { Textarea } from './ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
-import { RefreshCw, Repeat, AlertTriangle, Search, Edit, Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { IncidentReturnsRequests } from './incident/IncidentReturnsRequests';
 import { toast } from 'sonner';
@@ -115,7 +116,13 @@ export function IncidentRequest({
     phone: ''
   });
   const [selectedIncidents, setSelectedIncidents] = useState<string[]>([]);
-  const [items, setItems] = useState<Item[]>(mockInvoiceItems);
+  const [items, setItems] = useState<Item[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [incidentNotes, setIncidentNotes] = useState("");
+  const [incidentAttachment, setIncidentAttachment] = useState<File | null>(null);
+  const [invoiceMetadata, setInvoiceMetadata] = useState<any>(null);
+
   const itemsWithIncidents = items.filter(i => i.incidentType).length;
 
   const handleInvoiceSubmit = (e: React.FormEvent) => {
@@ -125,10 +132,32 @@ export function IncidentRequest({
     }
   };
 
-  const handleDetailsSubmit = (e: React.FormEvent) => {
+  const handleDetailsSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.email) {
-      setStep('incidents');
+    if (!formData.email) return;
+
+    setIsSearching(true);
+    try {
+      const resp = await fetch(`http://127.0.0.1:8000/api/invoices/search_by_email/?invoice_id=${formData.invoiceNumber}&email=${formData.email}`);
+      const data = await resp.json();
+      if (resp.ok) {
+        setInvoiceMetadata(data);
+        setItems(data.items.map((i: any) => ({
+          id: i.id,
+          itemName: i.item_name,
+          quantity: i.quantity,
+          requestedQuantity: 0,
+          price: parseFloat(i.unit_price) || 0,
+          incidentType: null
+        })));
+        setStep('incidents');
+      } else {
+        toast.error(data.error || "Invoice not found or email mismatch");
+      }
+    } catch (err) {
+      toast.error("Connection error");
+    } finally {
+      setIsSearching(false);
     }
   };
 
@@ -137,8 +166,8 @@ export function IncidentRequest({
   };
 
   const toggleIncidentType = (id: string) => {
-    setSelectedIncidents(prev => 
-      prev.includes(id) 
+    setSelectedIncidents(prev =>
+      prev.includes(id)
         ? prev.filter(item => item !== id)
         : [...prev, id]
     );
@@ -147,20 +176,20 @@ export function IncidentRequest({
   const cycleItemIncidentType = (itemId: string) => {
     setItems(prev => prev.map(item => {
       if (item.id !== itemId) return item;
-      
+
       // If no incident type, set to first selected incident
       if (!item.incidentType) {
         return { ...item, incidentType: selectedIncidents[0] || null };
       }
-      
+
       // Find current index in selected incidents
       const currentIndex = selectedIncidents.indexOf(item.incidentType);
-      
+
       // Cycle to next incident type, or null if at the end
       if (currentIndex === -1 || currentIndex === selectedIncidents.length - 1) {
         return { ...item, incidentType: null };
       }
-      
+
       return { ...item, incidentType: selectedIncidents[currentIndex + 1] };
     }));
   };
@@ -178,7 +207,7 @@ export function IncidentRequest({
 
   const getItemBoxColor = (incidentTypeId: string | null) => {
     if (!incidentTypeId) return 'bg-gray-200 dark:bg-gray-700';
-    
+
     const type = incidentTypes.find(t => t.id === incidentTypeId);
     return type?.boxColor || 'bg-gray-200 dark:bg-gray-700';
   };
@@ -279,8 +308,8 @@ export function IncidentRequest({
                     />
                   </div>
 
-                  <Button type="submit" className="w-full bg-[#0B3AAE] hover:bg-[#0B3AAE]/90 text-white">
-                    Continue
+                  <Button type="submit" className="w-full bg-[#0B3AAE] hover:bg-[#0B3AAE]/90 text-white" disabled={isSearching}>
+                    {isSearching ? "Verifying..." : "Continue"}
                   </Button>
                 </form>
               </CardContent>
@@ -301,8 +330,8 @@ export function IncidentRequest({
                       <p className="font-medium">{formData.invoiceNumber}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-muted-foreground">Invoice Date &amp; Time</p>
-                      <p className="font-medium">Feb 18, 2026 at 2:35 PM</p>
+                      <p className="text-xs text-muted-foreground">Invoice Date</p>
+                      <p className="font-medium">{invoiceMetadata?.date ? new Date(invoiceMetadata.date).toLocaleDateString() : 'N/A'}</p>
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground">Email</p>
@@ -313,9 +342,9 @@ export function IncidentRequest({
                       <p className="font-medium">{formData.phone || 'N/A'}</p>
                     </div>
                   </div>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={handleEditForm}
                     className="ml-4 gap-2"
                   >
@@ -333,15 +362,14 @@ export function IncidentRequest({
                 {incidentTypes.map((type) => {
                   const IconComponent = type.icon;
                   const isSelected = selectedIncidents.includes(type.id);
-                  
+
                   return (
                     <Card
                       key={type.id}
-                      className={`cursor-pointer transition-all duration-200 ${
-                        isSelected 
-                          ? `ring-2 ring-offset-2 ${type.ringColor} ${type.borderColor} ${type.bgColor}` 
-                          : 'border-border hover:shadow-md'
-                      }`}
+                      className={`cursor-pointer transition-all duration-200 ${isSelected
+                        ? `ring-2 ring-offset-2 ${type.ringColor} ${type.borderColor} ${type.bgColor}`
+                        : 'border-border hover:shadow-md'
+                        }`}
                       onClick={() => toggleIncidentType(type.id)}
                     >
                       <CardHeader className="pb-3">
@@ -431,7 +459,6 @@ export function IncidentRequest({
                       {selectedIncidents.map(incidentId => {
                         const type = incidentTypes.find(t => t.id === incidentId);
                         if (!type) return null;
-                        const IconComponent = type.icon;
                         return (
                           <div key={type.id} className="flex items-center gap-2">
                             <div className={`w-6 h-6 rounded ${type.boxColor}`} />
@@ -446,6 +473,39 @@ export function IncidentRequest({
                     </div>
                   </div>
 
+                  {/* Notes & Attachments */}
+                  <div className="mt-6 pt-6 border-t grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="incident-notes" className="text-sm font-semibold">Internal Note (Optional)</Label>
+                      <Textarea
+                        id="incident-notes"
+                        placeholder="Add instructions, updates, or details..."
+                        rows={3}
+                        value={incidentNotes}
+                        onChange={(e) => setIncidentNotes(e.target.value)}
+                        className="resize-none"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm font-semibold">Upload Attachment (Optional)</Label>
+                      <label
+                        className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-muted-foreground/30 rounded-lg bg-muted/5 cursor-pointer hover:bg-muted/10 transition-all group"
+                      >
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                          <Upload className="h-6 w-6 text-muted-foreground mb-2 group-hover:scale-110 transition-transform" />
+                          <p className="text-xs text-muted-foreground">
+                            {incidentAttachment ? incidentAttachment.name : "Click to upload files"}
+                          </p>
+                        </div>
+                        <input
+                          type="file"
+                          className="hidden"
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setIncidentAttachment(e.target.files?.[0] || null)}
+                        />
+                      </label>
+                    </div>
+                  </div>
+
                   {/* Summary */}
                   <div className="mt-6 pt-4 border-t">
                     <div className="flex justify-between items-center">
@@ -456,28 +516,64 @@ export function IncidentRequest({
                           </span>
                         </p>
                       </div>
-                      <Button 
+                      <Button
                         size="lg"
-                        disabled={itemsWithIncidents === 0}
+                        disabled={itemsWithIncidents === 0 || isSubmitting}
                         className="bg-[#0B3AAE] hover:bg-[#0B3AAE]/90 text-white"
-                        onClick={() => {
+                        onClick={async () => {
                           if (itemsWithIncidents === 0) return;
-                          const invoiceNumber = formData.invoiceNumber || 'INV-UNSET';
-                          onIncidentSubmitted?.({
-                            invoiceNumber,
-                            itemsWithIncidents,
-                            submittedAt: new Date().toISOString(),
-                          });
-                          toast.success('Incident request submitted', {
-                            description: `Invoice ${invoiceNumber} submitted. We will review and get back to you soon.`,
-                          });
-                          setFormData({ invoiceNumber: '', email: '', phone: '' });
-                          setSelectedIncidents([]);
-                          setItems(mockInvoiceItems);
-                          setStep('invoice');
+
+                          setIsSubmitting(true);
+                          try {
+                            const formDataObj = new FormData();
+                            formDataObj.append('invoice', invoiceMetadata.id);
+                            formDataObj.append('notes', incidentNotes || `Reported via IncidentRequest form for invoice ${formData.invoiceNumber}`);
+                            if (incidentAttachment) {
+                              formDataObj.append('attachment', incidentAttachment);
+                            }
+
+                            const itemsPayload = items.filter(i => i.incidentType).map(i => ({
+                              invoice_item: i.id,
+                              incident_type: i.incidentType ? i.incidentType.charAt(0).toUpperCase() + i.incidentType.slice(1) : "Damaged",
+                              quantity: i.requestedQuantity
+                            }));
+
+                            formDataObj.append('items', JSON.stringify(itemsPayload));
+
+                            const resp = await fetch(`http://127.0.0.1:8000/api/incidents/`, {
+                              method: 'POST',
+                              body: formDataObj
+                            });
+
+                            if (resp.ok) {
+                              const invoiceNumber = formData.invoiceNumber || 'INV-UNSET';
+                              onIncidentSubmitted?.({
+                                invoiceNumber,
+                                itemsWithIncidents,
+                                submittedAt: new Date().toISOString(),
+                              });
+                              toast.success('Incident request submitted', {
+                                description: `Invoice ${invoiceNumber} submitted. We will review it soon.`,
+                              });
+                              setFormData({ invoiceNumber: '', email: '', phone: '' });
+                              setSelectedIncidents([]);
+                              setItems([]);
+                              setIncidentNotes("");
+                              setIncidentAttachment(null);
+                              setInvoiceMetadata(null);
+                              setStep('invoice');
+                            } else {
+                              const errData = await resp.json();
+                              toast.error(`Error: ${errData.error || "Failed to submit"}`);
+                            }
+                          } catch (err) {
+                            toast.error("Submission failed. Check connection.");
+                          } finally {
+                            setIsSubmitting(false);
+                          }
                         }}
                       >
-                        Submit Incident Request
+                        {isSubmitting ? "Submitting..." : "Submit Incident Request"}
                       </Button>
                     </div>
                   </div>

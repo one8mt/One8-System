@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Input } from "../ui/input";
@@ -24,212 +24,135 @@ import { Label } from "../ui/label";
 import { DonutChart } from "../shared/DonutChart";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recharts";
 
-const returnsRequestsData = [
-  {
-    id: "RET-001",
-    clientName: "Global Retail Group",
-    created: "Sep 20",
-    invoiceNumber: "INV-2024-1145",
-    returnType: "Refund",
-    returnMode: "Full",
-    amount: "SAR 12,450",
-    rating: 4,
-    status: "Pending",
-    progress: 45,
-  },
-  {
-    id: "RET-002",
-    clientName: "Tech Solutions Inc",
-    created: "Sep 19",
-    invoiceNumber: "INV-2024-1144",
-    returnType: "Missing",
-    returnMode: "Partial",
-    amount: "SAR 8,920",
-    rating: 3,
-    status: "New",
-    progress: 100,
-  },
-  {
-    id: "RET-003",
-    clientName: "Manufacturing Co Ltd",
-    created: "Sep 18",
-    invoiceNumber: "INV-2024-1143",
-    returnType: "Damage",
-    returnMode: "Partial",
-    amount: "SAR 5,670",
-    rating: 2,
-    status: "Flagged",
-    progress: 30,
-  },
-  {
-    id: "RET-004",
-    clientName: "Office Supplies Plus",
-    created: "Sep 17",
-    invoiceNumber: "INV-2024-1142",
-    returnType: "Exchange",
-    returnMode: "Full",
-    amount: "SAR 15,230",
-    rating: 5,
-    status: "Approved",
-    progress: 85,
-  },
-  {
-    id: "RET-005",
-    clientName: "Wholesale Distributors",
-    created: "Sep 16",
-    invoiceNumber: "INV-2024-1141",
-    returnType: "Refund",
-    returnMode: "Partial",
-    amount: "SAR 3,450",
-    rating: 4,
-    status: "New",
-    progress: 60,
-  },
-  {
-    id: "RET-006",
-    clientName: "ABC Corporation",
-    created: "Sep 15",
-    invoiceNumber: "INV-2024-1140",
-    returnType: "Refund",
-    returnMode: "Full",
-    amount: "SAR 7,890",
-    rating: 3,
-    status: "Approved",
-    progress: 90,
-  },
-  {
-    id: "RET-007",
-    clientName: "TechMart LLC",
-    created: "Sep 14",
-    invoiceNumber: "INV-2024-1139",
-    returnType: "Missing",
-    returnMode: "Partial",
-    amount: "SAR 4,560",
-    rating: 2,
-    status: "Flagged",
-    progress: 25,
-  },
-  {
-    id: "RET-008",
-    clientName: "Global Retail Group",
-    created: "Sep 13",
-    invoiceNumber: "INV-2024-1138",
-    returnType: "Refund",
-    returnMode: "Full",
-    amount: "SAR 9,320",
-    rating: 5,
-    status: "New",
-    progress: 55,
-  },
-  {
-    id: "RET-009",
-    clientName: "Supply Chain Inc",
-    created: "Sep 12",
-    invoiceNumber: "INV-2024-1137",
-    returnType: "Damage",
-    returnMode: "Partial",
-    amount: "SAR 6,780",
-    rating: 3,
-    status: "Pending",
-    progress: 40,
-  },
-  {
-    id: "RET-010",
-    clientName: "Eastern Traders",
-    created: "Sep 11",
-    invoiceNumber: "INV-2024-1136",
-    returnType: "Exchange",
-    returnMode: "Full",
-    amount: "SAR 11,450",
-    rating: 4,
-    status: "New",
-    progress: 75,
-  },
-  {
-    id: "RET-011",
-    clientName: "Metro Supplies",
-    created: "Sep 10",
-    invoiceNumber: "INV-2024-1135",
-    returnType: "Missing",
-    returnMode: "Partial",
-    amount: "SAR 5,230",
-    rating: 2,
-    status: "Pending",
-    progress: 35,
-  },
-  {
-    id: "RET-012",
-    clientName: "Global Retail Group",
-    created: "Sep 9",
-    invoiceNumber: "INV-2024-1134",
-    returnType: "Refund",
-    returnMode: "Partial",
-    amount: "SAR 8,120",
-    rating: 4,
-    status: "Approved",
-    progress: 95,
-  },
-  {
-    id: "RET-013",
-    clientName: "Pacific Wholesale",
-    created: "Sep 8",
-    invoiceNumber: "INV-2024-1133",
-    returnType: "Exchange",
-    returnMode: "Full",
-    amount: "SAR 13,670",
-    rating: 5,
-    status: "Pending",
-    progress: 65,
-  },
-  {
-    id: "RET-014",
-    clientName: "Northern Distributors",
-    created: "Sep 7",
-    invoiceNumber: "INV-2024-1132",
-    returnType: "Missing",
-    returnMode: "Partial",
-    amount: "SAR 3,890",
-    rating: 3,
-    status: "Approved",
-    progress: 80,
-  },
-  {
-    id: "RET-015",
-    clientName: "Global Retail Group",
-    created: "Sep 6",
-    invoiceNumber: "INV-2024-1131",
-    returnType: "Refund",
-    returnMode: "Full",
-    amount: "SAR 10,560",
-    rating: 4,
-    status: "Pending",
-    progress: 50,
-  },
-  {
-    id: "RET-016",
-    clientName: "Desert Innovations",
-    created: "Sep 5",
-    invoiceNumber: "INV-2024-1130",
-    returnType: "Refund",
-    returnMode: "Partial",
-    amount: "SAR 6,230",
-    rating: 3,
-    status: "Approved",
-    progress: 88,
-  },
-];
+// Static data removed in favor of backend fetching
 
 export function IncidentReturnsRequests() {
-  const [selectedReturn, setSelectedReturn] = useState<typeof returnsRequestsData[0] | null>(null);
+  const [selectedReturn, setSelectedReturn] = useState<any | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
+  // Real Data State
+  const [incidents, setIncidents] = useState<any[]>([]);
+  const [isLoadingIncidents, setIsLoadingIncidents] = useState(true);
+
+  useEffect(() => {
+    fetchIncidents();
+  }, []);
+
+  const fetchIncidents = async () => {
+    setIsLoadingIncidents(true);
+    try {
+      const resp = await fetch("http://127.0.0.1:8000/api/incidents/");
+      const data = await resp.json();
+      setIncidents(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Error fetching incidents:", err);
+    } finally {
+      setIsLoadingIncidents(false);
+    }
+  };
+
+  // New Incident Search/Creation State
+  const [searchInvoiceId, setSearchInvoiceId] = useState("");
+  const [searchEmail, setSearchEmail] = useState("");
+  const [foundInvoice, setFoundInvoice] = useState<any>(null);
+  const [isSearching, setIsSearching] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [searchError, setSearchError] = useState("");
+  const [incidentForm, setIncidentForm] = useState<{
+    items: Array<{
+      invoice_item: string;
+      item_name: string;
+      item_code: string;
+      incident_type: string;
+      quantity: number;
+      max_qty: number;
+    }>;
+    notes: string;
+  }>({ items: [], notes: "" });
+
+  const handleSearch = async () => {
+    if (!searchInvoiceId || !searchEmail) {
+      setSearchError("Please enter both Invoice ID and Email");
+      return;
+    }
+    setIsSearching(true);
+    setSearchError("");
+    setFoundInvoice(null);
+
+    try {
+      const resp = await fetch(`http://127.0.0.1:8000/api/invoices/search_by_email/?invoice_id=${searchInvoiceId}&email=${searchEmail}`);
+      const data = await resp.json();
+      if (!resp.ok) {
+        setSearchError(data.error || "Invoice not found");
+      } else {
+        setFoundInvoice(data);
+        // Initialize incident form items
+        setIncidentForm({
+          notes: "",
+          items: data.items.map((i: any) => ({
+            invoice_item: i.id,
+            item_name: i.item_name,
+            item_code: i.item_code,
+            incident_type: "Damaged",
+            quantity: 0,
+            max_qty: i.quantity
+          }))
+        });
+      }
+    } catch (err) {
+      setSearchError("Connection error. Please try again.");
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleSubmitIncident = async () => {
+    const activeItems = incidentForm.items.filter(i => i.quantity > 0);
+    if (activeItems.length === 0) {
+      alert("Please specify at least one item with a quantity greater than zero.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const resp = await fetch(`http://127.0.0.1:8000/api/incidents/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          invoice: foundInvoice.id,
+          notes: incidentForm.notes,
+          items: activeItems.map(i => ({
+            invoice_item: i.invoice_item,
+            incident_type: i.incident_type,
+            quantity: i.quantity
+          }))
+        })
+      });
+
+      if (resp.ok) {
+        alert("Incident request submitted successfully!");
+        setFoundInvoice(null);
+        setSearchInvoiceId("");
+        setSearchEmail("");
+        fetchIncidents(); // Refresh the list
+      } else {
+        const data = await resp.json();
+        alert(`Error: ${data.error || "Failed to submit"}`);
+      }
+    } catch (err) {
+      alert("Error submitting request.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const getRequestStatus = (status: string) =>
-    (["Approved", "Flagged", "Pending", "New"].includes(status) ? status : "New") as
+    (["Approved", "Flagged", "Pending"].includes(status) ? status : "Pending") as
     | "Approved"
     | "Flagged"
     | "Pending"
-    | "New";
+    | "Pending";
 
   const getReturnType = (type: string) =>
     (["Refund", "Missing", "Damage", "Exchange"].includes(type) ? type : "Refund") as
@@ -271,71 +194,150 @@ export function IncidentReturnsRequests() {
     }
   };
 
-  const getDetailFor = (returnRequest: typeof returnsRequestsData[0]) => {
-    const emailSlug = returnRequest.clientName.toLowerCase().replace(/[^a-z0-9]/g, "");
-    const dateTime = `${returnRequest.created}, 2025 2:35 PM`;
-    const itemNameByType: Record<string, string> = {
-      Refund: "Laptop Dell XPS 15",
-      Missing: "Network Switch 48-Port",
-      Damage: "Industrial Drill Set",
-      Exchange: "Ergonomic Chair Pro",
-    };
-    const itemName = itemNameByType[returnRequest.returnType] || "Selected Item";
+  // getDetailFor removed as it was for static data
 
-    return {
-      email: `${emailSlug}@client.com`,
-      dateTime,
-      items: [
-        {
-          id: `${returnRequest.id}-ITEM-1`,
-          name: itemName,
-          quantity: 2,
-          requestedQuantity: 1,
-          unitPrice: "SAR 1,250",
-          incidentType: returnRequest.returnType,
-          selected: true,
-        },
-        {
-          id: `${returnRequest.id}-ITEM-2`,
-          name: "Office Chair Ergonomic",
-          quantity: 5,
-          requestedQuantity: 2,
-          unitPrice: "SAR 1,050",
-          incidentType: "Damage",
-          selected: true,
-        },
-        {
-          id: `${returnRequest.id}-ITEM-3`,
-          name: "Wireless Mouse Logitech",
-          quantity: 10,
-          requestedQuantity: 1,
-          unitPrice: "SAR 120",
-          incidentType: "Exchange",
-          selected: true,
-        },
-        {
-          id: `${returnRequest.id}-ITEM-4`,
-          name: "USB-C Hub Multiport",
-          quantity: 8,
-          requestedQuantity: 1,
-          unitPrice: "SAR 190",
-          incidentType: "Missing",
-          selected: true,
-        },
-      ],
-    };
-  };
+  // Helper functions removed as they are no longer needed
 
-  const parseSar = (value: string) =>
-    Number(value.replace(/[^\d.]/g, "")) || 0;
-
-  const handleSelectReturn = (returnRequest: typeof returnsRequestsData[0]) => {
-    setSelectedReturn(returnRequest);
-    setIsDetailsOpen(true);
-  };
 
   return (
     <div id="incident-returns-requests" className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card className="lg:col-span-1">
+          <CardHeader>
+            <CardTitle className="text-lg">Submit New Incident</CardTitle>
+            <p className="text-xs text-muted-foreground">Search by Invoice ID and Client Email</p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label className="text-xs">Invoice ID</Label>
+              <Input
+                placeholder="e.g. INV-2026..."
+                value={searchInvoiceId}
+                onChange={(e) => setSearchInvoiceId(e.target.value)}
+                className="h-9"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs">Client Email</Label>
+              <Input
+                type="email"
+                placeholder="e.g. client@example.com"
+                value={searchEmail}
+                onChange={(e) => setSearchEmail(e.target.value)}
+                className="h-9"
+              />
+            </div>
+            {searchError && <p className="text-xs text-red-500 font-medium">{searchError}</p>}
+            <Button
+              className="w-full h-9 bg-[#0B3AAE] hover:bg-blue-700"
+              onClick={handleSearch}
+              disabled={isSearching}
+            >
+              {isSearching ? "Searching..." : "Search Invoice"}
+            </Button>
+          </CardContent>
+        </Card>
+
+        {foundInvoice ? (
+          <Card className="lg:col-span-2 border-blue-200 bg-blue-50/30">
+            <CardHeader className="pb-2">
+              <div className="flex justify-between items-start">
+                <div>
+                  <CardTitle className="text-lg">Invoice {foundInvoice.id}</CardTitle>
+                  <p className="text-xs text-muted-foreground">Client: {foundInvoice.client_name}</p>
+                </div>
+                <Button variant="ghost" size="sm" onClick={() => setFoundInvoice(null)} className="h-7 text-xs">Reset</Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="rounded-md border bg-background overflow-hidden">
+                <Table className="text-xs">
+                  <TableHeader>
+                    <TableRow className="h-8 py-0">
+                      <TableHead className="h-8">Item</TableHead>
+                      <TableHead className="h-8 text-center">In Stock</TableHead>
+                      <TableHead className="h-8 w-24 text-center">Incident Qty</TableHead>
+                      <TableHead className="h-8 w-32">Type</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {incidentForm.items.map((item, idx) => (
+                      <TableRow key={item.invoice_item}>
+                        <TableCell className="py-1">
+                          <p className="font-medium">{item.item_name}</p>
+                          <p className="text-[10px] text-muted-foreground">{item.item_code}</p>
+                        </TableCell>
+                        <TableCell className="text-center py-1">{item.max_qty}</TableCell>
+                        <TableCell className="py-1">
+                          <Input
+                            type="number"
+                            min="0"
+                            max={item.max_qty}
+                            value={item.quantity}
+                            onChange={(e) => {
+                              const val = Math.min(item.max_qty, Math.max(0, parseInt(e.target.value) || 0));
+                              const newItems = [...incidentForm.items];
+                              newItems[idx].quantity = val;
+                              setIncidentForm({ ...incidentForm, items: newItems });
+                            }}
+                            className="h-7 text-center focus-visible:ring-blue-500"
+                          />
+                        </TableCell>
+                        <TableCell className="py-1">
+                          <Select
+                            value={item.incident_type}
+                            onValueChange={(val) => {
+                              const newItems = [...incidentForm.items];
+                              newItems[idx].incident_type = val;
+                              setIncidentForm({ ...incidentForm, items: newItems });
+                            }}
+                          >
+                            <SelectTrigger className="h-7 text-[10px]">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Damaged" className="text-xs">Damaged</SelectItem>
+                              <SelectItem value="Missing" className="text-xs">Missing</SelectItem>
+                              <SelectItem value="Refund" className="text-xs">Refund</SelectItem>
+                              <SelectItem value="Exchange" className="text-xs">Exchange</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              <div className="space-y-1">
+                <Label className="text-xs">Internal Notes / Additional Info</Label>
+                <Textarea
+                  placeholder="Tell us more about the problem..."
+                  className="text-xs min-h-[60px]"
+                  value={incidentForm.notes}
+                  onChange={(e) => setIncidentForm({ ...incidentForm, notes: e.target.value })}
+                />
+              </div>
+
+              <Button
+                className="w-full h-10 bg-green-600 hover:bg-green-700 font-semibold"
+                disabled={isSubmitting}
+                onClick={handleSubmitIncident}
+              >
+                {isSubmitting ? "Submitting..." : "Submit Incident Report"}
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="lg:col-span-2 flex items-center justify-center border-dashed bg-muted/20">
+            <div className="text-center p-12">
+              <CheckCircle className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
+              <p className="text-sm font-medium text-muted-foreground">Enter an Invoice ID above to report an issue</p>
+            </div>
+          </Card>
+        )}
+      </div>
+
       <Dialog
         open={isDetailsOpen && !!selectedReturn}
         onOpenChange={(open) => {
@@ -354,65 +356,63 @@ export function IncidentReturnsRequests() {
                 </DialogTitle>
               </DialogHeader>
               {(() => {
-                const details = getDetailFor(selectedReturn);
+                const details = selectedReturn;
                 return (
                   <div className="space-y-3 mt-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       <div className="space-y-2">
                         <label className="text-xs font-medium">Client Name</label>
-                        <Input value={selectedReturn.clientName} disabled={!isEditMode} />
+                        <Input value={details.client_name} disabled />
                       </div>
                       <div className="space-y-2">
                         <label className="text-xs font-medium">Invoice Number</label>
-                        <Input value={selectedReturn.invoiceNumber} disabled={!isEditMode} />
+                        <Input value={details.invoice_id} disabled />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-medium">Email</label>
-                        <Input value={details.email} disabled={!isEditMode} />
+                        <label className="text-xs font-medium">Incident Status</label>
+                        <Input value={details.status} disabled />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-medium">Date &amp; Time</label>
-                        <Input value={details.dateTime} disabled={!isEditMode} />
+                        <label className="text-xs font-medium">Submitted At</label>
+                        <Input value={new Date(details.created_at).toLocaleString()} disabled />
                       </div>
                     </div>
 
                     <div>
-                      <h3 className="text-xs font-medium mb-1">Items</h3>
+                      <h3 className="text-xs font-medium mb-1">Items Included</h3>
                       <Table className="text-xs">
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead className="w-12">Type</TableHead>
-                            <TableHead>Item Name</TableHead>
-                            <TableHead className="text-center">Quantity</TableHead>
-                            <TableHead className="text-center">Qty</TableHead>
-                            <TableHead className="text-right">Unit Price</TableHead>
-                            <TableHead className="text-right">Total</TableHead>
+                        <TableHeader className="bg-muted/30">
+                          <TableRow className="h-8 py-0">
+                            <TableHead className="w-12 h-8">Type</TableHead>
+                            <TableHead className="h-8">Item Name</TableHead>
+                            <TableHead className="h-8 text-center">Code</TableHead>
+                            <TableHead className="h-8 text-center">Quantity</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {details.items.map((item) => (
+                          {details.items?.map((item: any) => (
                             <TableRow key={item.id}>
-                              <TableCell>
-                                <div className={`w-6 h-6 rounded-md ${getIncidentTypeStyle(item.incidentType)}`} />
+                              <TableCell className="py-1">
+                                <div className={`w-6 h-6 rounded-md ${getIncidentTypeStyle(item.incident_type)}`} />
                               </TableCell>
-                              <TableCell className="font-medium">{item.name}</TableCell>
-                              <TableCell className="text-center">{item.quantity}</TableCell>
-                              <TableCell className="text-center font-bold">{item.requestedQuantity}</TableCell>
-                              <TableCell className="text-right">{item.unitPrice}</TableCell>
-                              <TableCell className="text-right font-bold">
-                                SAR {(parseSar(item.unitPrice) * item.requestedQuantity).toLocaleString()}
-                              </TableCell>
+                              <TableCell className="font-medium py-1">{item.item_name}</TableCell>
+                              <TableCell className="text-center py-1">{item.item_code}</TableCell>
+                              <TableCell className="text-center font-bold py-1">{item.quantity}</TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
                       </Table>
                     </div>
 
+                    {details.notes && (
+                      <div className="space-y-1">
+                        <label className="text-xs font-medium">Incident Notes</label>
+                        <Textarea value={details.notes} readOnly className="text-xs min-h-[60px] bg-muted/20" />
+                      </div>
+                    )}
+
                     <div className="flex justify-end gap-3 mt-6">
-                      <Button variant="outline" onClick={() => setIsDetailsOpen(false)}>Close</Button>
-                      <Button onClick={() => setIsEditMode(!isEditMode)}>
-                        {isEditMode ? "Save Changes" : "Edit Request"}
-                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => setIsDetailsOpen(false)}>Close</Button>
                     </div>
                   </div>
                 );
@@ -447,36 +447,47 @@ export function IncidentReturnsRequests() {
                   </tr>
                 </thead>
                 <tbody>
-                  {returnsRequestsData.map((returnRequest) => (
+                  {isLoadingIncidents ? (
+                    <tr><td colSpan={9} className="text-center p-8 text-muted-foreground">Loading incidents...</td></tr>
+                  ) : incidents.length === 0 ? (
+                    <tr><td colSpan={9} className="text-center p-8 text-muted-foreground">No incident requests found.</td></tr>
+                  ) : incidents.map((inc) => (
                     <tr
-                      key={returnRequest.id}
+                      key={inc.id}
                       className="border-b hover:bg-muted/50 transition-colors cursor-pointer"
-                      onClick={() => handleSelectReturn(returnRequest)}
+                      onClick={() => {
+                        setSelectedReturn(inc);
+                        setIsDetailsOpen(true);
+                      }}
                     >
-                      <td className="p-3">{returnRequest.id}</td>
+                      <td className="p-3 text-xs font-mono">{inc.id.split('-')[0]}...</td>
                       <td className="p-3">
                         <div className="flex items-center gap-2">
                           <UserCircle className="h-4 w-4 text-muted-foreground" />
-                          {returnRequest.clientName}
+                          {inc.client_name}
                         </div>
                       </td>
-                      <td className="p-3 text-muted-foreground">{returnRequest.invoiceNumber}</td>
+                      <td className="p-3 text-muted-foreground">{inc.invoice_id}</td>
                       <td className="p-3">
-                        <CrmReturnTypeBadge type={getReturnType(returnRequest.returnType)} />
+                        <div className="flex gap-1 flex-wrap">
+                          {inc.items?.map((item: any, idx: number) => (
+                            <CrmReturnTypeBadge key={idx} type={getReturnType(item.incident_type)} />
+                          ))}
+                        </div>
                       </td>
                       <td className="p-3">
-                        <CrmReturnModeBadge mode={getReturnMode(returnRequest.returnMode)} />
+                        <CrmReturnModeBadge mode={inc.items?.length === 1 ? "Full" : "Partial"} />
                       </td>
-                      <td className="p-3 font-medium">{returnRequest.amount}</td>
-                      <td className="p-3">{renderStars(returnRequest.rating)}</td>
+                      <td className="p-3 font-medium">---</td>
+                      <td className="p-3">{renderStars(4)}</td>
                       <td className="p-3">
-                        <RequestStatusBadge status={getRequestStatus(returnRequest.status)} force />
+                        <RequestStatusBadge status={getRequestStatus(inc.status)} force />
                       </td>
                       <td className="p-3">
                         <div className="flex items-center gap-2">
-                          <Progress value={returnRequest.progress} className="w-20" />
-                          <span className="text-sm text-muted-foreground">
-                            {returnRequest.progress}%
+                          <Progress value={inc.status === 'Approved' ? 100 : 45} className="w-20" />
+                          <span className="text-xs text-muted-foreground">
+                            {inc.status === 'Approved' ? '100%' : '45%'}
                           </span>
                         </div>
                       </td>

@@ -1,6 +1,6 @@
 import { Badge } from '../ui/badge';
 
-export type CrmReturnType = 'Refund' | 'Missing' | 'Damage' | 'Exchange';
+export type CrmReturnType = 'Refund' | 'Missing' | 'Damage' | 'Exchange' | 'Mixed';
 export type CrmReturnMode = 'Full' | 'Partial';
 
 const RETURN_TYPE_STYLES: Record<CrmReturnType, string> = {
@@ -12,6 +12,8 @@ const RETURN_TYPE_STYLES: Record<CrmReturnType, string> = {
     'rounded-full px-3 py-1 text-sm font-semibold bg-white text-red-700 border-red-400 shadow-[0_0_0_1px_rgba(239,68,68,0.15)] dark:bg-white dark:text-red-700 dark:border-red-400',
   Exchange:
     'rounded-full px-3 py-1 text-sm font-semibold bg-white text-purple-700 border-purple-400 shadow-[0_0_0_1px_rgba(168,85,247,0.15)] dark:bg-white dark:text-purple-700 dark:border-purple-400',
+  Mixed:
+    'rounded-full px-3 py-1 text-sm font-semibold bg-white text-slate-700 border-slate-400 shadow-[0_0_0_1px_rgba(71,85,105,0.15)] dark:bg-white dark:text-slate-300 dark:border-slate-500',
 };
 
 const RETURN_MODE_STYLES: Record<CrmReturnMode, string> = {

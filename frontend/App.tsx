@@ -7,6 +7,7 @@ import { NewCRMDashboard } from './src/components/new_crm/NewCRMDashboard';
 import { HomeDashboard } from './src/components/HomeDashboard';
 import { SupplierPortal } from './src/components/SupplierPortal';
 import { IncidentRequest } from './src/components/IncidentRequest';
+import { FinanceDashboard } from './src/components/FinanceDashboard';
 import { Toaster } from './src/components/ui/sonner';
 
 type IncidentNotification = {
@@ -94,7 +95,11 @@ export default function App() {
           />
         )}
 
-        {userRole !== 'supplier' && activeModule !== 'Home' && activeModule !== 'Procurement' && activeModule !== 'Inventory' && activeModule !== 'CRM' && activeModule !== 'NewCrm' && activeModule !== 'HR' && activeModule !== 'Incident Request' && userRole !== 'client' && (
+        {userRole !== 'supplier' && activeModule === 'Finance' && userRole !== 'client' && (
+          <FinanceDashboard userRole={userRole === 'manager' ? 'manager' : 'employee'} />
+        )}
+
+        {userRole !== 'supplier' && activeModule !== 'Home' && activeModule !== 'Procurement' && activeModule !== 'Inventory' && activeModule !== 'CRM' && activeModule !== 'NewCrm' && activeModule !== 'Finance' && activeModule !== 'HR' && activeModule !== 'Incident Request' && userRole !== 'client' && (
           <div className="flex items-center justify-center h-96">
             <div className="text-center">
               <h2 className="mb-2">{activeModule} Module</h2>
