@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { IncidentKanban } from "./IncidentKanban";
-import { ProductLifeCycle } from "./ProductLifeCycle";
+import { ProjectLifeCycle } from "./ProjectLifeCycle";
 import { Progress } from "../ui/progress";
 import { DonutChart } from "../shared/DonutChart";
 import {
@@ -33,8 +33,8 @@ const missingReturns = Array(3).fill(0);
 
 const cards = [
   {
-    id: "Product Life Cycle",
-    description: "Manage product lifecycle stages and invoices",
+    id: "Project Life Cycle",
+    description: "Manage project lifecycle stages and invoices",
     stats: { total: 24, pending: 5 },
     color: "purple",
     icon: RefreshCw,
@@ -101,7 +101,7 @@ export function NewCRMDashboard({
       <div>
         <h1 className="mb-2 text-2xl font-bold">CRM Dashboard</h1>
         <p className="text-muted-foreground">
-          Overview of incident requests and product lifecycle.
+          Overview of incident requests and project lifecycle.
         </p>
       </div>
 
@@ -161,8 +161,8 @@ export function NewCRMDashboard({
         <IncidentKanban />
       )}
 
-      {activeCardId === "Product Life Cycle" && (
-        <ProductLifeCycle />
+      {activeCardId === "Project Life Cycle" && (
+        <ProjectLifeCycle />
       )}
 
       {activeCardId === null && (

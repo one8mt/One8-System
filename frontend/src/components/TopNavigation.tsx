@@ -2,10 +2,10 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Badge } from './ui/badge';
-import { 
-  Sun, 
-  Moon, 
-  MessageCircle, 
+import {
+  Sun,
+  Moon,
+  MessageCircle,
   ChevronDown
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -21,7 +21,7 @@ interface TopNavigationProps {
   setUserRole: (role: 'employee' | 'manager' | 'client' | 'supplier') => void;
 }
 
-const erpModules = ['Home', 'Procurement', 'Finance', 'CRM', 'NewCrm', 'Inventory', 'Incident Request'];
+const erpModules = ['Home', 'Procurement', 'CRM', 'Inventory', 'Finance', 'NewCrm', 'Incident Request'];
 const procurementSubsections = ['Purchase Requisitions', 'Requests for Quotation', 'Purchase Orders'];
 
 export function TopNavigation({
@@ -42,7 +42,7 @@ export function TopNavigation({
     console.log('Switching to:', newRole);
     setUserRole(newRole);
     setIsDropdownOpen(false);
-    
+
     // If switching to client, automatically switch to CRM module
     if (newRole === 'client') {
       setActiveModule('CRM');
@@ -86,7 +86,7 @@ export function TopNavigation({
           <div className="flex items-center space-x-3">
             <img src="/one8logo.png" alt="ONE8" className="h-8 w-auto" />
           </div>
-          
+
           {/* ERP Modules */}
           <nav className="flex items-center space-x-1">
             {erpModules.map((module) => (
@@ -121,8 +121,8 @@ export function TopNavigation({
 
           {/* User Profile Dropdown */}
           <div className="relative" ref={dropdownRef}>
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               className="flex items-center space-x-3 px-2 hover:bg-muted"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
@@ -138,8 +138,8 @@ export function TopNavigation({
                     ? 'Client Portal'
                     : userRole === 'supplier'
                       ? 'Supplier Portal'
-                      : userRole === 'manager' 
-                        ? `${activeModule === 'Home' ? 'ERP' : activeModule} Manager` 
+                      : userRole === 'manager'
+                        ? `${activeModule === 'Home' ? 'ERP' : activeModule} Manager`
                         : `${activeModule === 'Home' ? 'ERP' : activeModule} Officer`}
                 </p>
               </div>
