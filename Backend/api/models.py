@@ -48,6 +48,15 @@ class ProjectStage(models.Model):
     def __str__(self):
         return f"{self.project.title} - {self.stage_name}"
 
+class Product(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    item_code = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.item_code} - {self.name}"
+
 class Invoice(models.Model):
     STATUS_CHOICES = [
         ('Draft', 'Draft'),
@@ -68,13 +77,20 @@ class Invoice(models.Model):
 class InvoiceItem(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='invoice_items', null=True)
     item_code = models.CharField(max_length=100)
-    item_name = models.CharField(max_length=255)
+    product_name = models.CharField(max_length=255)
     quantity = models.IntegerField(default=1)
     unit_price = models.DecimalField(max_digits=12, decimal_places=2)
     line_total = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
 
     def save(self, *args, **kwargs):
+        if self.product:
+            if not self.item_code:
+                self.item_code = self.product.item_code
+            if not self.product_name:
+                self.product_name = self.product.name
+        
         self.line_total = self.quantity * self.unit_price
         super().save(*args, **kwargs)
 
@@ -84,7 +100,7 @@ class InvoiceItem(models.Model):
         self.invoice.save(update_fields=['net_total'])
 
     def __str__(self):
-        return f"{self.quantity}x {self.item_name} (Invoice {self.invoice.id})"
+        return f"{self.quantity}x {self.product_name} (Invoice {self.invoice.id})"
 
 class Incident(models.Model):
     INCIDENT_TYPE_CHOICES = [
@@ -117,4 +133,4 @@ class IncidentItem(models.Model):
     quantity = models.IntegerField(default=1)
 
     def __str__(self):
-        return f"{self.incident_type} - {self.quantity}x {self.invoice_item.item_name}"
+        return f"{self.incident_type} - {self.quantity}x {self.invoice_item.product_name}"

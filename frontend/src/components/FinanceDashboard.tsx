@@ -6,7 +6,7 @@ import { FinancePMS } from './finance/FinancePMS';
 import { FinanceCRM } from './finance/FinanceCRM';
 import { FinanceAccounting } from './finance/FinanceAccounting';
 import type { DataEntry, AccountingEntry } from './finance/financeShared';
-import { initialPmsData, initialCrmData } from './finance/financeShared';
+import { initialPmsData, initialCrmData, otherCosts } from './finance/financeShared';
 
 interface FinanceDashboardProps {
     userRole?: 'employee' | 'manager' | 'client' | 'supplier';
@@ -87,12 +87,16 @@ export function FinanceDashboard({ userRole }: FinanceDashboardProps) {
                             <CardContent className="pt-0">
                                 <div className="grid grid-cols-2 gap-2 text-sm">
                                     <div className="text-center p-2 bg-muted/50 rounded">
-                                        <p className="font-medium">{count}</p>
-                                        <p className="text-xs text-muted-foreground">Total</p>
+                                        <p className="font-medium text-[11px] truncate">
+                                            {mod.id === 'Accounting' 
+                                                ? `SAR ${(submitted.reduce((s, e) => s + e.cost, 0) + otherCosts.reduce((s, e) => s + e.amount, 0)).toLocaleString()}` 
+                                                : count}
+                                        </p>
+                                        <p className="text-[10px] text-muted-foreground uppercase">{mod.id === 'Accounting' ? 'Cost' : 'Total'}</p>
                                     </div>
                                     <div className="text-center p-2 bg-muted/50 rounded">
                                         <p className="font-medium">{secondary}</p>
-                                        <p className="text-xs text-muted-foreground">{mod.id === 'Accounting' ? 'Entries' : 'Pending'}</p>
+                                        <p className="text-[10px] text-muted-foreground uppercase">{mod.id === 'Accounting' ? 'Entries' : 'Pending'}</p>
                                     </div>
                                 </div>
                             </CardContent>

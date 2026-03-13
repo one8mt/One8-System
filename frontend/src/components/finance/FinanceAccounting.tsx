@@ -9,8 +9,10 @@ import { Badge } from '../ui/badge';
 import { DonutChart } from '../shared/DonutChart';
 import { KpiCards } from '../shared/KpiCards';
 import { getTooltipStyle, getAxisStyle } from '../ChartColors';
-import { otherCosts, InvoiceModal } from './financeShared';
-import type { AccountingEntry, DataEntry } from './financeShared';
+import { otherCosts, InvoiceModal, NewProductDialog, NewInvoiceDialog } from './financeShared';
+import type { AccountingEntry, DataEntry, Product } from './financeShared';
+import { Plus, Package } from 'lucide-react';
+import { Button } from '../ui/button';
 
 interface FinanceAccountingProps {
     submitted: AccountingEntry[];
@@ -29,18 +31,30 @@ const monthlyTrend = [
 export function FinanceAccounting({ submitted, onUpdate }: FinanceAccountingProps) {
     const [selectedInvoice, setSelectedInvoice] = useState<AccountingEntry | null>(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+    const [isNewInvoiceModalOpen, setIsNewInvoiceModalOpen] = useState(false);
 
     const handleRowClick = (entry: AccountingEntry) => {
         setSelectedInvoice(entry);
         setIsEditModalOpen(true);
     };
 
-    const totalRevenue = submitted.reduce((s, e) => s + e.amount, 0);
-    const totalSubmittedCost = submitted.reduce((s, e) => s + e.cost, 0);
+    const totalRevenue = submitted
+        .filter(e => e.source === 'CRM')
+        .reduce((s, e) => s + e.amount, 0);
+    const totalDeductions = submitted
+        .filter(e => e.source === 'CRM')
+        .reduce((s, e) => s + (e.incident_deduction || 0), 0);
+    const netRevenue = totalRevenue - totalDeductions;
+
+    const totalSubmittedCost = submitted
+        .filter(e => e.source === 'PMS')
+        .reduce((s, e) => s + e.cost, 0);
+        
     const totalOtherCosts = otherCosts.reduce((s, e) => s + e.amount, 0);
     const totalCost = totalSubmittedCost + totalOtherCosts;
-    const netProfit = totalRevenue - totalCost;
-    const margin = totalRevenue > 0 ? ((netProfit / totalRevenue) * 100).toFixed(1) : '0.0';
+    const netProfit = netRevenue - totalCost;
+    const margin = netRevenue > 0 ? ((netProfit / netRevenue) * 100).toFixed(1) : '0.0';
 
     const trendData = monthlyTrend.map((m) =>
         m.month === 'Mar' ? { ...m, revenue: totalRevenue, cost: totalCost } : m
@@ -48,8 +62,8 @@ export function FinanceAccounting({ submitted, onUpdate }: FinanceAccountingProp
 
     const barData = submitted.map((e) => ({
         name: e.id,
-        Revenue: e.amount,
-        Cost: e.cost,
+        Revenue: e.source === 'CRM' ? e.amount : 0,
+        Cost: e.source === 'PMS' ? e.cost : 0,
     }));
 
     const salaries = otherCosts.filter(c => c.category === 'Employee Salaries').reduce((s, c) => s + c.amount, 0);
@@ -64,7 +78,7 @@ export function FinanceAccounting({ submitted, onUpdate }: FinanceAccountingProp
     ];
 
     const kpis = [
-        { title: 'Total Revenue', value: `SAR ${totalRevenue.toLocaleString()}`, change: submitted.length > 0 ? `+${submitted.length} invoices` : '—', icon: DollarSign, changeTone: 'positive' as const },
+        { title: 'Net Revenue', value: `SAR ${netRevenue.toLocaleString()}`, change: totalRevenue > 0 ? `Gross: ${totalRevenue.toLocaleString()}` : '—', icon: DollarSign, changeTone: 'positive' as const },
         { title: 'Total Costs', value: `SAR ${totalCost.toLocaleString()}`, change: `${totalOtherCosts.toLocaleString()} other`, icon: TrendingDown, changeTone: 'negative' as const },
         { title: 'Net Profit', value: `SAR ${netProfit.toLocaleString()}`, change: `${margin}% margin`, icon: TrendingUp, changeTone: netProfit >= 0 ? 'positive' as const : 'negative' as const },
         { title: 'Submitted', value: String(submitted.length), change: 'PMS + CRM', icon: Calculator, changeTone: 'primary' as const },
@@ -77,8 +91,25 @@ export function FinanceAccounting({ submitted, onUpdate }: FinanceAccountingProp
 
             {/* Submitted Invoices Table */}
             <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle>Submitted Invoices</CardTitle>
+                    <div className="flex gap-2">
+                        <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => setIsProductModalOpen(true)}
+                            className="h-8 gap-1"
+                        >
+                            <Package className="h-4 w-4" /> Create Product
+                        </Button>
+                        <Button 
+                            size="sm" 
+                            onClick={() => setIsNewInvoiceModalOpen(true)}
+                            className="h-8 gap-1 bg-[#0B3AAE] hover:bg-blue-700 text-white"
+                        >
+                            <Plus className="h-4 w-4" /> New Invoice
+                        </Button>
+                    </div>
                 </CardHeader>
                 <CardContent>
                     {submitted.length === 0 ? (
@@ -97,44 +128,68 @@ export function FinanceAccounting({ submitted, onUpdate }: FinanceAccountingProp
                                         <th className="text-left p-3 font-medium text-sm">Client Name</th>
                                         <th className="text-left p-3 font-medium text-sm">Invoice Number</th>
                                         <th className="text-right p-3 font-medium text-sm">Revenue (SAR)</th>
+                                        <th className="text-right p-3 font-medium text-sm">Returns (SAR)</th>
                                         <th className="text-right p-3 font-medium text-sm">Cost (SAR)</th>
                                         <th className="text-left p-3 font-medium text-sm">Submitted</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {submitted.map((e) => (
+                                    {submitted.map((e, idx) => (
                                         <tr
                                             key={e.id + e.submittedAt}
                                             className="border-b hover:bg-muted/50 transition-colors cursor-pointer group"
                                             onClick={() => handleRowClick(e)}
                                         >
                                             <td className="p-3 font-mono font-medium text-foreground text-sm flex items-center gap-2">
-                                                {e.id}
+                                                {e.source === 'CRM' ? `CRM-${String(idx + 1).padStart(3, '0')}` : `PO-${String(idx + 1).padStart(3, '0')}`}
                                                 <Edit2 className="h-3 w-3 opacity-0 group-hover:opacity-40 transition-opacity" />
                                             </td>
                                             <td className="p-3">
                                                 <Badge className={`text-xs ${e.source === 'PMS' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
-                                                    {e.source}
+                                                    {e.source === 'PMS' ? 'PO (PMS)' : 'INV (CRM)'}
                                                 </Badge>
                                             </td>
                                             <td className="p-3 text-sm">{e.clientName}</td>
                                             <td className="p-3 text-muted-foreground text-sm">{e.invoiceNumber}</td>
-                                            <td className="p-3 text-right font-medium text-green-700 text-sm">{e.amount.toLocaleString()}</td>
-                                            <td className="p-3 text-right text-red-700 text-sm">{e.cost.toLocaleString()}</td>
+                                            <td className="p-3 text-right font-medium text-green-700 text-sm">
+                                                {e.source === 'CRM' ? e.amount.toLocaleString() : <span className="text-gray-300">—</span>}
+                                            </td>
+                                            <td className="p-3 text-right text-red-600 text-sm font-semibold">
+                                                {e.source === 'CRM' && e.incident_deduction && e.incident_deduction > 0 
+                                                    ? `- ${e.incident_deduction.toLocaleString()}` 
+                                                    : <span className="text-gray-300">—</span>}
+                                            </td>
+                                            <td className="p-3 text-right text-red-700 text-sm">
+                                                {e.source === 'PMS' ? e.cost.toLocaleString() : <span className="text-gray-300">—</span>}
+                                            </td>
                                             <td className="p-3 text-xs text-muted-foreground">{e.submittedAt}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                                 <tfoot>
+                                    {totalDeductions > 0 && (
+                                        <tr className="bg-red-50/30 border-t font-semibold text-red-700">
+                                            <td colSpan={5} className="p-3 text-right text-sm italic">Total Incident Returns</td>
+                                            <td className="p-3 text-right text-sm">
+                                                - SAR {totalDeductions.toLocaleString()}
+                                            </td>
+                                            <td colSpan={2} />
+                                        </tr>
+                                    )}
                                     <tr className="bg-muted/40 border-t-2 font-semibold">
                                         <td colSpan={4} className="p-3 text-right text-sm">Totals</td>
-                                        <td className="p-3 text-right text-sm text-green-700">SAR {totalRevenue.toLocaleString()}</td>
+                                        <td className="p-3 text-right text-sm text-green-700">
+                                            SAR {netRevenue.toLocaleString()}
+                                            <p className="text-[9px] font-normal opacity-70">(Net CRM Revenue)</p>
+                                        </td>
+                                        <td className="text-right p-3 opacity-30">—</td>
                                         <td className="p-3 text-right text-sm text-red-700">SAR {totalSubmittedCost.toLocaleString()}</td>
-                                        <td className="p-3 text-right text-sm">—</td>
+                                        <td className="p-3 text-right text-sm opacity-30">—</td>
                                     </tr>
                                     <tr className="bg-blue-50 dark:bg-blue-950 border-t font-bold">
-                                        <td colSpan={4} className="p-3 text-right text-sm">Net Profit (Revenue − Invoice Costs − Other Costs)</td>
-                                        <td colSpan={3} className={`p-3 text-right text-base ${netProfit >= 0 ? 'text-blue-700' : 'text-red-700'}`}>
+                                        <td colSpan={4} className="p-3 text-right text-sm italic">Net Profit Calculation</td>
+                                        <td colSpan={4} className={`p-3 text-right text-base ${netProfit >= 0 ? 'text-blue-700' : 'text-red-700'}`}>
+                                            <span className="text-xs font-normal text-muted-foreground mr-4">(CRM Revenue - Returns - PO Cost - Other)</span>
                                             SAR {netProfit.toLocaleString()} ({margin}% margin)
                                         </td>
                                     </tr>
@@ -303,6 +358,28 @@ export function FinanceAccounting({ submitted, onUpdate }: FinanceAccountingProp
                     onSubmit={(data) => {
                         onUpdate?.(data, selectedInvoice.source);
                         setIsEditModalOpen(false);
+                    }}
+                />
+            )}
+
+            {isProductModalOpen && (
+                <NewProductDialog 
+                    onClose={() => setIsProductModalOpen(false)}
+                    onSuccess={(product) => {
+                        console.log('Product created:', product);
+                        // Optional: show a toast or message
+                    }}
+                />
+            )}
+
+            {isNewInvoiceModalOpen && (
+                <NewInvoiceDialog 
+                    onClose={() => setIsNewInvoiceModalOpen(false)}
+                    existingInvoices={submitted}
+                    onSuccess={(invoice) => {
+                        console.log('Invoice created:', invoice);
+                        // In a real app, we'd add this to the list or re-fetch
+                        // For now we'll just close the modal
                     }}
                 />
             )}

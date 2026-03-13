@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Client, Project, ProjectStage, Invoice, InvoiceItem, Incident, IncidentItem
+from .models import Client, Project, ProjectStage, Invoice, InvoiceItem, Incident, IncidentItem, Product
 
 # Register your models here.
 
@@ -7,6 +7,11 @@ from .models import Client, Project, ProjectStage, Invoice, InvoiceItem, Inciden
 class ClientAdmin(admin.ModelAdmin):
     list_display = ('name', 'contact_email', 'phone', 'city', 'country', 'created_at')
     search_fields = ('name', 'contact_email', 'city', 'country')
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('item_code', 'name', 'created_at')
+    search_fields = ('item_code', 'name')
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):

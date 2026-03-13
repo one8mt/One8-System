@@ -1,16 +1,21 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import Client, Project, ProjectStage, Invoice, InvoiceItem, Incident, IncidentItem
+from .models import Client, Project, ProjectStage, Invoice, InvoiceItem, Incident, IncidentItem, Product
 from .serializers import (
     ClientSerializer, ProjectSerializer, ProjectStageSerializer,
-    InvoiceSerializer, InvoiceItemSerializer, IncidentSerializer, IncidentItemSerializer
+    InvoiceSerializer, InvoiceItemSerializer, IncidentSerializer, IncidentItemSerializer,
+    ProductSerializer
 )
 from django.db.models import Count, Q
 
 class ClientViewSet(viewsets.ModelViewSet):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
 
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
